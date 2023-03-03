@@ -30,7 +30,7 @@ class Main:
     def menu(self):
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
-        screen.fill(BGCOLOUR)
+        screen.fill(BG_COLOUR)
         font = pygame.font.Font("Retro Gaming.ttf", 30)
         text = font.render("Click to start.", 1, WHITE)
 
