@@ -12,7 +12,6 @@ class Main:
         self.clock = pygame.time.Clock()
         self.count = 0
 
-
     # main function to run the game
     def run(self):
         self.board.draw()
