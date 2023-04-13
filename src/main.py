@@ -29,7 +29,7 @@ class Main:
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
         screen.fill(BG_COLOUR)
-        font = pygame.font.Font("../resources/Retro Gaming.ttf", 30)
+        font = pygame.font.Font("resources/Retro Gaming.ttf", 30)
         text = font.render("Click to start.", 1, WHITE)
 
         while 1:
@@ -47,7 +47,7 @@ class Main:
     # initialises some visual stuff like the title and icon
     def visual(self):
         pygame.display.set_caption(TITLE)
-        icon = pygame.image.load('../resources/logo.png')
+        icon = pygame.image.load('resources/logo.png')
         pygame.display.set_icon(icon)
 
     # checks for game updates

@@ -9,7 +9,7 @@ from building import Settlement
 class Board:
     def __init__(self, width, height):
         self.screen = pygame.display.set_mode((width, height))
-        self.tile_size = TILESIZE
+        self.tile_size = TILE_SIZE
         self.width = math.sqrt(3) * self.tile_size
         self.height = 2 * self.tile_size
         self.tiles = []
@@ -26,7 +26,7 @@ class Board:
         v = []
         polygon_v = []
         rows = [3, 4, 5, 4, 3]
-        self.screen.fill(BGCOLOUR)
+        self.screen.fill(BG_COLOUR)
         x = 170
         y = 150
         count = 0
