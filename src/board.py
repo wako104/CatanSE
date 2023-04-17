@@ -17,9 +17,16 @@ class Board:
         self.tiles += [WHEAT, SHEEP, WOOD] * 4
         self.tiles += [SAND]
         random.shuffle(self.tiles)
+        # Will store each unique vertex on the board
         self.unique_v = []
+        # Will store each vertex as a key with a list of adjacent resources as value
         self.location_materials = {}
+        # Will store the location of each existing settlement as an object of Settlement
         self.existing_settlements = []
+        # Will store the location of each of the hexagons centres
+        self.hex_centres = []
+        # Will store and array of tuples containing the vertices of each unique edge
+        self.edge_vertices = []
 
     # draws the board
     def draw(self):
@@ -45,6 +52,7 @@ class Board:
                 x += self.width
                 centre = (round(x + x_offset), round(y))  # stores centre of a hexagon in a tuple
                 vertices = []
+                self.hex_centres.append(centre)
 
                 # calculate vertices from centre of a hexagon
                 for j in range(6):
@@ -85,10 +93,26 @@ class Board:
                     self.location_materials[vertex].append(self.tiles[polynum])
             polynum += 1
 
+        # Finds each edge between the unique vertices and stores them in edge_vertices
+        for vertex in self.unique_v:
+            for vertex_2 in self.unique_v:
+                # Find the distance between vertex and vertex_2
+                distance = math.sqrt(abs(vertex_2[0]-vertex[0])**2+abs(vertex_2[1]-vertex[1])**2)
+                # Checks if the distance is close enough to be an adjacent vertex but not zero
+                if distance < 60:
+                    if distance != 0:
+                        # Check if the edge is in edge_vertices, including the reverse edge
+                        if (vertex, vertex_2) not in self.edge_vertices:
+                            if (vertex_2, vertex) not in self.edge_vertices:
+                                self.edge_vertices.append((vertex, vertex_2))
+
+        print(v)
+        print(len(self.edge_vertices))
         print(len(self.unique_v))
         print(self.unique_v)
         print(len(self.location_materials))
         print(self.location_materials)
+        print(len(self.hex_centres))
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, location):
@@ -102,7 +126,6 @@ class Board:
                     for settlement in self.existing_settlements:
                         if settlement.location == option:
                             exist = 1
-                            break
 
                     if exist == 1:
                         print("Location not available")

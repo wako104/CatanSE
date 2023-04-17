@@ -1,7 +1,8 @@
 import pygame
 from settings import *
 import sys
-from src.board import Board
+from board import Board
+from player import Player
 
 
 class Main:
@@ -11,12 +12,21 @@ class Main:
         self.board = Board(WIDTH, HEIGHT)
         self.clock = pygame.time.Clock()
         self.count = 0
+        self.currentPlayer = 0
+        self.num_players = 0
 
     # main function to run the game
     def run(self):
         self.board.draw()
         pygame.display.flip()
         self.running = True
+
+        # loop to create list of objects of players
+        players = []
+        for i in range(self.num_players):
+            player = Player()
+            players.append(player)
+        print(players)
 
         # loops to keep game running and updating until it is closed
         while self.running:
@@ -29,19 +39,31 @@ class Main:
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
         screen.fill(BG_COLOUR)
-        font = pygame.font.Font("resources/Retro Gaming.ttf", 30)
-        text = font.render("Click to start.", 1, WHITE)
+        font = pygame.font.Font("resources/Retro Gaming.ttf", 22)
+        text = font.render("Press 1-4 for the number of players.", 1, WHITE)
 
-        while 1:
-
+        # ask user how many players will be in the game and store the value
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.run()
+                if event.type == pygame.KEYDOWN:
+                    if event.key in [pygame.K_1, pygame.K_KP1]:
+                        self.num_players = 1
+                        self.run()
+                    elif event.key in [pygame.K_2, pygame.K_KP2]:
+                        self.num_players = 2
+                        self.run()
+                    elif event.key in [pygame.K_3, pygame.K_KP3]:
+                        self.num_players = 3
+                        self.run()
+                    elif event.key in [pygame.K_4, pygame.K_KP4]:
+                        self.num_players = 4
+                        self.run()
 
-            screen.blit(text, (250, 250))
-
+            text_rect = text.get_rect()
+            text_rect.center = (WIDTH // 2, HEIGHT // 2)
+            screen.blit(text, text_rect)
             pygame.display.update()
 
     # initialises some visual stuff like the title and icon
