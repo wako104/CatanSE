@@ -31,7 +31,7 @@ class Board:
     # draws the board
     def draw(self):
         v = []
-        polygon_v = []
+        polygon_v = [7]
         rows = [3, 4, 5, 4, 3]
         self.screen.fill(BG_COLOUR)
         x = 170
