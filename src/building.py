@@ -4,9 +4,10 @@ from settings import *
 
 class Settlement:
 
-    def __init__(self, player, location):
+    def __init__(self, player, location, adjacent):
         self.player = player
         self.location = location
+        self.adjacent = adjacent
 
     def get_resources(self):
         pass
