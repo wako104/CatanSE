@@ -6,6 +6,8 @@ class Player:
     def __init__(self, num):
         # player number
         self.num = num
+        # player colour
+        self.colour = self.set_colour
         # initial road placements
         self.initial_placements = []
         # the cards a player has
@@ -13,20 +15,45 @@ class Player:
         # players victory points
         self.victory_points = 0
 
+
     def build_settlement(self, point):
+
+        # resources needed to build a settlement
         settlement_rsrc = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
 
+        # check that player has required cards
         if not self.check_cards(settlement_rsrc):
             return -1
 
+        self.remove_cards(settlement_rsrc)
+
     def build_road(self, point1, point2):
-        road_rsrc = {
-            Resource.Wood,
-            Resource.Brick
-        }
+
+        # resources needed to build a road
+        road_rsrc = [Resource.Wood, Resource.Brick]
+
+        # check that player has required cards
+        if not self.check_cards(road_rsrc):
+            return -1
+
+        # check that the location of the road is valid
+        if not self.check_road_location(point1, point2):
+            return -1
 
     def check_cards(self, cards):
         for card in self.cards:
             if cards.count(card) == 0:
                 return False
         return True
+
+    def check_road_location(self, point1, point2):
+        return True
+
+    def add_cards(self, cards):
+        for card in cards:
+            self.cards.append(card)
+
+    def remove_cards(self, cards):
+        for card in cards:
+            del self.cards[self.cards.index(card)]
+
