@@ -31,7 +31,7 @@ class Board:
     # draws the board
     def draw(self):
         v = []
-        polygon_v = [7]
+        polygon_v = []
         rows = [3, 4, 5, 4, 3]
         self.screen.fill(BG_COLOUR)
         x = 170
@@ -89,8 +89,11 @@ class Board:
         polynum = 0
         for polygon in polygon_v:
             for vertex in self.unique_v:
-                if vertex in polygon or (vertex[0] + 1, vertex[1]) in polygon or (vertex[0] - 1, vertex[1]) in polygon:
-                    self.location_materials[vertex].append(self.tiles[polynum])
+                if vertex in polygon:
+                    if (vertex[0] + 1, vertex[1]) in polygon:
+                        if (vertex[0] - 1, vertex[1]) in polygon:
+                            print("hello")
+                            self.location_materials[vertex].append(self.tiles[polynum])
             polynum += 1
 
         # Finds each edge between the unique vertices and stores them in edge_vertices
@@ -106,16 +109,8 @@ class Board:
                             if (vertex_2, vertex) not in self.edge_vertices:
                                 self.edge_vertices.append((vertex, vertex_2))
 
-        print(v)
-        print(len(self.edge_vertices))
-        print(len(self.unique_v))
-        print(self.unique_v)
-        print(len(self.location_materials))
-        print(self.location_materials)
-        print(len(self.hex_centres))
-
     # method called when clicking on a location you want to place a settlement
-    def place_settlement(self, location):
+    def place_settlement(self, player, location):
         # Checks whether the location given is close to one of the unique vertices on the board.
         exist = 0
         for option in self.unique_v:
@@ -130,8 +125,9 @@ class Board:
                     if exist == 1:
                         print("Location not available")
                     else:
-                        new_settlement = Settlement("player", option)
+                        new_settlement = Settlement(player, option)
                         self.existing_settlements.append(new_settlement)
-                        pygame.draw.circle(self.screen, (200, 123, 112), option, 10)
+                        print(player.colour)
+                        pygame.draw.circle(self.screen, player.colour, option, 10)
                         print("settlement created")
                         print(self.existing_settlements)

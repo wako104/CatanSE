@@ -12,7 +12,6 @@ class Main:
         self.board = Board(WIDTH, HEIGHT)
         self.clock = pygame.time.Clock()
         self.count = 0
-        self.currentPlayer = 0
         self.num_players = 0
 
     # main function to run the game
@@ -24,8 +23,9 @@ class Main:
         # loop to create list of objects of players
         players = []
         for i in range(self.num_players):
-            player = Player()
+            player = Player(i+1)
             players.append(player)
+        self.currentPlayer = players[0]
         print(players)
 
         # loops to keep game running and updating until it is closed
@@ -39,7 +39,7 @@ class Main:
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
         screen.fill(BG_COLOUR)
-        font = pygame.font.Font("resources/Retro Gaming.ttf", 22)
+        font = pygame.font.Font("../resources/Retro Gaming.ttf", 22)
         text = font.render("Press 1-4 for the number of players.", 1, WHITE)
 
         # ask user how many players will be in the game and store the value
@@ -69,7 +69,7 @@ class Main:
     # initialises some visual stuff like the title and icon
     def visual(self):
         pygame.display.set_caption(TITLE)
-        icon = pygame.image.load('resources/logo.png')
+        icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
 
     # checks for game updates
@@ -83,7 +83,7 @@ class Main:
                 self.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
-                self.board.place_settlement(location)
+                self.board.place_settlement(self.currentPlayer, location)
 
     # quits game
     def quit(self):

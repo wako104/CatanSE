@@ -1,5 +1,5 @@
 from cards import Resource, Development
-
+from settings import *
 
 class Player:
 
@@ -7,7 +7,14 @@ class Player:
         # player number
         self.num = num
         # player colour
-        self.colour = self.set_colour
+        if self.num == 1:
+            self.colour = PLAYERCOLOUR1
+        if self.num == 2:
+            self.colour = PLAYERCOLOUR2
+        if self.num == 3:
+            self.colour = PLAYERCOLOUR3
+        if self.num == 4:
+            self.colour = PLAYERCOLOUR4
         # initial road placements
         self.initial_placements = []
         # the cards a player has
@@ -26,6 +33,7 @@ class Player:
             return -1
 
         self.remove_cards(settlement_rsrc)
+
 
     def build_road(self, point1, point2):
 
