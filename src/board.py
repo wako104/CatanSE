@@ -126,11 +126,9 @@ class Board:
                             error = 2
                     for edge in self.edge_vertices:
                         if option in edge:
-                            adjacent_edge.append(edge)
-                    for edge in adjacent_edge:
-                        for vertex in edge:
-                            if vertex != option:
-                                adjacent.append(vertex)
+                            for vertex in edge:
+                                if vertex != option:
+                                    adjacent.append(vertex)
                     if error == 1:
                         print("Location not available")
                     elif error == 2:
