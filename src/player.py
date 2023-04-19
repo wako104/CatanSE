@@ -65,3 +65,12 @@ class Player:
         for card in cards:
             del self.cards[self.cards.index(card)]
 
+    def set_colour(self):
+        if self.num == 1:
+            self.colour = PLAYERCOLOUR1
+        if self.num == 2:
+            self.colour = PLAYERCOLOUR2
+        if self.num == 3:
+            self.colour = PLAYERCOLOUR3
+        if self.num == 4:
+            self.colour = PLAYERCOLOUR4
