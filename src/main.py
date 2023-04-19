@@ -24,7 +24,7 @@ class Main:
         # loop to create list of objects of players
         players = []
         for i in range(self.num_players):
-            player = Player()
+            player = Player(i)
             players.append(player)
         print(players)
 
