@@ -39,7 +39,7 @@ class Main:
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
         screen.fill(BG_COLOUR)
-        font = pygame.font.Font("resources/Retro Gaming.ttf", 22)
+        font = pygame.font.Font("../resources/Retro Gaming.ttf", 22)
         text = font.render("Press 1-4 for the number of players.", 1, WHITE)
 
         # ask user how many players will be in the game and store the value
@@ -69,7 +69,7 @@ class Main:
     # initialises some visual stuff like the title and icon
     def visual(self):
         pygame.display.set_caption(TITLE)
-        icon = pygame.image.load('resources/logo.png')
+        icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
 
     # checks for game updates
