@@ -87,15 +87,9 @@ class Main:
 
     # ends turn
     def endTurn(self):
-        if self.currentPlayer == self.players[0]:
-            self.currentPlayer = self.players[1]
-        elif self.currentPlayer == self.players[1]:
-            self.currentPlayer = self.players[2]
-        elif self.currentPlayer == self.players[2]:
-            self.currentPlayer = self.players[3]
-        elif self.currentPlayer == self.players[3]:
-            self.currentPlayer = self.players[0]
-
+        player_count = len(self.players)
+        current_player_index = self.players.index(self.currentPlayer)
+        self.currentPlayer = self.players[(current_player_index + 1) % player_count]
 
     # checks for game updates
     def update(self):
