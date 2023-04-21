@@ -111,32 +111,36 @@ class Board:
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location):
-        # Checks whether the location given is close to one of the unique vertices on the board.
-        error = 0
-        adjacent_edge = []
-        adjacent = []
-        for option in self.unique_v:
-            if location[0] in range(option[0] - 10, option[0] + 10):
-                if location[1] in range(option[1] - 10, option[1] + 10):
-                    # Check if the vertex is already taken, if not, draw a circle and update the dictionary
-                    for settlement in self.existing_settlements:
-                        if settlement.location == option:
-                            error = 1
-                        elif option in settlement.adjacent:
-                            error = 2
-                    for edge in self.edge_vertices:
-                        if option in edge:
-                            for vertex in edge:
-                                if vertex != option:
-                                    adjacent.append(vertex)
-                    if error == 1:
-                        print("Location not available")
-                    elif error == 2:
-                        print("Cannot place adjacent to another settlement.")
-                    else:
-                        new_settlement = Settlement(player, option, adjacent)
-                        self.existing_settlements.append(new_settlement)
-                        print(player.colour)
-                        pygame.draw.circle(self.screen, player.colour, option, 10)
-                        print("settlement created")
-                        print(self.existing_settlements)
+        if player.check_cards(SETTLEMENT):
+            # Checks whether the location given is close to one of the unique vertices on the board.
+            error = 0
+            adjacent_edge = []
+            adjacent = []
+            for option in self.unique_v:
+                if location[0] in range(option[0] - 10, option[0] + 10):
+                    if location[1] in range(option[1] - 10, option[1] + 10):
+                        # Check if the vertex is already taken, if not, draw a circle and update the dictionary
+                        for settlement in self.existing_settlements:
+                            if settlement.location == option:
+                                error = 1
+                            elif option in settlement.adjacent:
+                                error = 2
+                        for edge in self.edge_vertices:
+                            if option in edge:
+                                for vertex in edge:
+                                    if vertex != option:
+                                        adjacent.append(vertex)
+                        if error == 1:
+                            print("Location not available")
+                        elif error == 2:
+                            print("Cannot place adjacent to another settlement.")
+                        else:
+                            new_settlement = Settlement(player, option, adjacent)
+                            self.existing_settlements.append(new_settlement)
+                            print(player.colour)
+                            pygame.draw.circle(self.screen, player.colour, option, 10)
+                            print("settlement created")
+                            print(self.existing_settlements)
+                            player.remove_cards(SETTLEMENT)
+        else:
+            print("Player does not have required cards")

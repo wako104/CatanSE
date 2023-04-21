@@ -1,3 +1,5 @@
+from cards import Resource, Development
+
 FPS = 60
 TITLE = 'Settlers'
 BG_COLOUR = 58, 117, 163
@@ -22,3 +24,5 @@ PLAYERCOLOUR2 = (0, 0, 255)
 PLAYERCOLOUR3 = (0, 255, 0)
 PLAYERCOLOUR4 = (255, 255, 0)
 
+ROAD = [Resource.Wood, Resource.Brick]
+SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
