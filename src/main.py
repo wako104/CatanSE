@@ -28,6 +28,7 @@ class Main:
             self.players.append(player)
         self.currentPlayer = self.players[0]
         print(self.players)
+        print("Player " + str(self.currentPlayer.num))
 
         # loops to keep game running and updating until it is closed
         while self.running:
@@ -37,6 +38,7 @@ class Main:
             self.update()
 
     def menu(self):
+        self.visual()
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
         screen.fill(BG_COLOUR)
@@ -90,6 +92,7 @@ class Main:
         player_count = len(self.players)
         current_player_index = self.players.index(self.currentPlayer)
         self.currentPlayer = self.players[(current_player_index + 1) % player_count]
+        print("Player " + str(self.currentPlayer.num))
 
     # checks for game updates
     def update(self):

@@ -3,8 +3,8 @@ from cards import Resource, Development
 FPS = 60
 TITLE = 'Settlers'
 BG_COLOUR = 58, 117, 163
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1000
+HEIGHT = 750
 TILE_SIZE = 50
 GRID_WIDTH = WIDTH / TILE_SIZE
 GRID_HEIGHT = HEIGHT / TILE_SIZE
@@ -26,3 +26,23 @@ PLAYERCOLOUR4 = (255, 255, 0)
 
 ROAD = [Resource.Wood, Resource.Brick]
 SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
+
+# board tokens
+A = 5
+B = 2
+C = 6
+D = 3
+E = 8
+F = 10
+G = 9
+H = 12
+I = 11
+J = 4
+K = 8
+L = 10
+M = 9
+N = 4
+O = 5
+P = 6
+Q = 3
+R = 11

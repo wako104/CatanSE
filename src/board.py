@@ -28,6 +28,9 @@ class Board:
         self.hex_centres = []
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
+        self.tokens = [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
+        random.shuffle(self.tokens)
+        self.font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
     # draws the board
     def draw(self):
@@ -68,11 +71,26 @@ class Board:
 
                 pygame.draw.polygon(self.screen, self.tiles[count], vertices)
                 pygame.draw.polygon(self.screen, BLACK, vertices, 3)
-                pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
+                #pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
                 count += 1
 
             y += self.height * 3/4
             x -= self.width * rows[row]  # resets x back to starting position
+
+        # places the token number on each tile
+        desert = self.tiles.index(SAND)
+        self.tokens.insert(desert, None)
+
+        for i in range(19):
+            if self.tiles[i] != SAND:
+                text = str(self.tokens[i])
+                dest = self.hex_centres[i]
+                print(text, dest)
+                place_text = self.font.render(text, 1, WHITE)
+                self.screen.blit(place_text, dest)
+                count += 1
+            else:
+                pass
 
         # creates a list of unique tuples which represent coordinates of each vertex.
         # i.e. list of the coordinates for possible settlement locations
