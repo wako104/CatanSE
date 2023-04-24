@@ -28,6 +28,7 @@ class Main:
             self.players.append(player)
         self.currentPlayer = self.players[0]
         print(self.players)
+        print("Player " + str(self.currentPlayer.num))
 
         # loops to keep game running and updating until it is closed
         while self.running:
@@ -90,6 +91,7 @@ class Main:
         player_count = len(self.players)
         current_player_index = self.players.index(self.currentPlayer)
         self.currentPlayer = self.players[(current_player_index + 1) % player_count]
+        print("Player " + str(self.currentPlayer.num))
 
     # checks for game updates
     def update(self):
