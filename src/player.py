@@ -1,4 +1,3 @@
-from cards import Resource, Development
 from settings import *
 
 
@@ -23,16 +22,19 @@ class Player:
         # players victory points
         self.victory_points = 0
 
+    # check player has cards required
     def check_cards(self, cards):
         for card in cards:
             if self.cards.count(card) == 0:
                 return False
         return True
 
+    # add card(s) to players deck
     def add_cards(self, cards):
         for card in cards:
             self.cards.append(card)
 
+    # remove card(s) from players deck
     def remove_cards(self, cards):
         for card in cards:
             del self.cards[self.cards.index(card)]
