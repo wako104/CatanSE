@@ -2,6 +2,7 @@ import math
 import pygame
 import random
 
+import building
 from settings import *
 from building import Settlement
 
@@ -111,11 +112,14 @@ class Board:
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location):
-        if not self.check_initial_placements(player):
+        # check if the placement is not an initial placement
+        if not self.check_initial_placements(player, building.Settlement):
+            # if it is not an initial placement, check the player has the correct cards
             if not player.check_cards(SETTLEMENT):
                 print("Player does not have required cards")
                 return -1
             else:
+                # if player has correct cards, remove them from their deck
                 player.remove_cards(SETTLEMENT)
 
         # Checks whether the location given is close to one of the unique vertices on the board.
@@ -148,11 +152,13 @@ class Board:
                         print("settlement created")
                         print(self.existing_settlements)
 
-    def check_initial_placements(self, player):
+    # checks the number of placements a player has.
+    def check_initial_placements(self, player, placement_type):
         count = 0
-        for settlement in self.existing_settlements:
-            if settlement.player == player:
-                count += 1
+        if placement_type == building.Settlement:
+            for settlement in self.existing_settlements:
+                if settlement.player == player:
+                    count += 1
         if count < 2:
             return True
         else:
