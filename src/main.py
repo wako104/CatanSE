@@ -13,20 +13,21 @@ class Main:
         self.clock = pygame.time.Clock()
         self.count = 0
         self.num_players = 0
+        self.players = []
 
     # main function to run the game
     def run(self):
         self.board.draw()
+        self.draw_end_turn_button()
         pygame.display.flip()
         self.running = True
 
         # loop to create list of objects of players
-        players = []
         for i in range(self.num_players):
             player = Player(i+1)
-            players.append(player)
-        self.currentPlayer = players[0]
-        print(players)
+            self.players.append(player)
+        self.currentPlayer = self.players[0]
+        print(self.players)
 
         # loops to keep game running and updating until it is closed
         while self.running:
@@ -72,6 +73,24 @@ class Main:
         icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
 
+    # creates end turn button
+    def draw_end_turn_button(self):
+        button_width, button_height = 100, 50
+        button_x = WIDTH - button_width - 10
+        button_y = HEIGHT - button_height - 10
+        self.end_turn_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, (255, 0, 0), self.end_turn_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("End Turn", 1, (255, 255, 255))
+        text_pos = text.get_rect(center=self.end_turn_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    # ends turn
+    def endTurn(self):
+        player_count = len(self.players)
+        current_player_index = self.players.index(self.currentPlayer)
+        self.currentPlayer = self.players[(current_player_index + 1) % player_count]
+
     # checks for game updates
     def update(self):
         pygame.display.update()
@@ -83,7 +102,10 @@ class Main:
                 self.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
-                self.board.place_settlement(self.currentPlayer, location)
+                if self.end_turn_button_rect.collidepoint(location):
+                    self.endTurn()
+                else:
+                    self.board.place_settlement(self.currentPlayer, location)
 
     # quits game
     def quit(self):
