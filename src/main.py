@@ -1,4 +1,6 @@
 import pygame
+import math
+
 from settings import *
 import sys
 from board import Board
@@ -107,8 +109,14 @@ class Main:
                 location = pygame.mouse.get_pos()
                 if self.end_turn_button_rect.collidepoint(location):
                     self.endTurn()
-                else:
-                    self.board.place_settlement(self.currentPlayer, location)
+                for option in self.board.unique_v:
+                    if location[0] in range(option[0] - 10, option[0] + 10):
+                        if location[1] in range(option[1] - 10, option[1] + 10):
+                            self.board.place_settlement(self.currentPlayer, location)
+                for option in self.board.centre_edge:
+                    if location[0] in range(option[0][0] - 10, option[0][0] + 10):
+                        if location[1] in range(option[0][1] - 10, option[0][1] + 10):
+                            self.board.place_road(self.currentPlayer, option)
 
     # quits game
     def quit(self):

@@ -3,6 +3,7 @@ import pygame
 import random
 
 import building
+from road import *
 from settings import *
 from building import Settlement
 
@@ -24,13 +25,18 @@ class Board:
         self.location_materials = {}
         # Will store the location of each existing settlement as an object of Settlement
         self.existing_settlements = []
-        # Will store the location of each of the hexagons centres
         self.hex_centres = []
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
         self.tokens = [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
         random.shuffle(self.tokens)
         self.font = pygame.font.Font(pygame.font.get_default_font(), 30)
+        # Will store the middle of each edge
+        self.centre_edge = []
+        # Will store all edges which already have a road
+        self.existing_roads = []
+        # Store tile with resource
+        self.hex_resource = []
 
     # draws the board
     def draw(self):
@@ -71,7 +77,6 @@ class Board:
 
                 pygame.draw.polygon(self.screen, self.tiles[count], vertices)
                 pygame.draw.polygon(self.screen, BLACK, vertices, 3)
-                #pygame.draw.circle(self.screen, BLACK, centre, 4, 4)
                 count += 1
 
             y += self.height * 3/4
@@ -108,10 +113,11 @@ class Board:
         for polygon in polygon_v:
             for vertex in self.unique_v:
                 if vertex in polygon:
-                    if (vertex[0] + 1, vertex[1]) in polygon:
-                        if (vertex[0] - 1, vertex[1]) in polygon:
-                            print("hello")
-                            self.location_materials[vertex].append(self.tiles[polynum])
+                    self.location_materials[vertex].append(self.tiles[polynum])
+                if (vertex[0] + 1, vertex[1]) in polygon:
+                    self.location_materials[vertex].append(self.tiles[polynum])
+                if (vertex[0] - 1, vertex[1]) in polygon:
+                    self.location_materials[vertex].append(self.tiles[polynum])
             polynum += 1
 
         # Finds each edge between the unique vertices and stores them in edge_vertices
@@ -126,6 +132,14 @@ class Board:
                         if (vertex, vertex_2) not in self.edge_vertices:
                             if (vertex_2, vertex) not in self.edge_vertices:
                                 self.edge_vertices.append((vertex, vertex_2))
+        self.get_edge_centres()
+
+    def get_edge_centres(self):
+        for edge in self.edge_vertices:
+            new_x = math.floor((edge[0][0] + edge[1][0])/2)
+            new_y = math.floor((edge[0][1] + edge[1][1])/2)
+            new_coord = (new_x, new_y)
+            self.centre_edge.append((new_coord, edge))
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location):
@@ -141,7 +155,6 @@ class Board:
 
         # Checks whether the location given is close to one of the unique vertices on the board.
         error = 0
-        adjacent_edge = []
         adjacent = []
         for option in self.unique_v:
             if location[0] in range(option[0] - 10, option[0] + 10):
@@ -180,3 +193,22 @@ class Board:
             return True
         else:
             return False
+
+    # Method to place a road on the board
+    def place_road(self, player, option):
+        error = 0
+        # Check if the vertex is already taken, if not, draw a circle and update the dictionary
+        for road in self.existing_roads:
+            if road.location[0] == option[0]:
+                error = 1
+        if error == 1:
+            print("Location not available")
+        else:
+            new_road = Road(player, option)
+            self.existing_roads.append(new_road)
+            pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
+            print("road created")
+            print(self.existing_roads)
+
+
+
