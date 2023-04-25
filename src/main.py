@@ -16,6 +16,7 @@ class Main:
         self.count = 0
         self.num_players = 0
         self.players = []
+        self.turn_number = 1
 
     # main function to run the game
     def run(self):
@@ -28,12 +29,16 @@ class Main:
         for i in range(self.num_players):
             player = Player(i+1)
             self.players.append(player)
-        self.currentPlayer = self.players[0]
+        self.current_player = self.players[0]
         print(self.players)
-        print("Player " + str(self.currentPlayer.num))
+        print("Player " + str(self.current_player.num))
 
         # loops to keep game running and updating until it is closed
         while self.running:
+            font = pygame.font.Font(None, 24)
+            text = font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
+            pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
+            self.board.screen.blit(text, (10, 10))
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -90,11 +95,13 @@ class Main:
         self.board.screen.blit(text, text_pos)
 
     # ends turn
-    def endTurn(self):
+    def end_turn(self):
         player_count = len(self.players)
-        current_player_index = self.players.index(self.currentPlayer)
-        self.currentPlayer = self.players[(current_player_index + 1) % player_count]
-        print("Player " + str(self.currentPlayer.num))
+        current_player_index = self.players.index(self.current_player)
+        if current_player_index == player_count -1:
+            self.turn_number += 1
+        self.current_player = self.players[(current_player_index + 1) % player_count]
+        print("Player " + str(self.current_player.num))
 
     # checks for game updates
     def update(self):
@@ -108,15 +115,15 @@ class Main:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.end_turn_button_rect.collidepoint(location):
-                    self.endTurn()
+                    self.end_turn()
                 for option in self.board.unique_v:
                     if location[0] in range(option[0] - 10, option[0] + 10):
                         if location[1] in range(option[1] - 10, option[1] + 10):
-                            self.board.place_settlement(self.currentPlayer, location)
+                            self.board.place_settlement(self.current_player, location)
                 for option in self.board.centre_edge:
                     if location[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if location[1] in range(option[0][1] - 10, option[0][1] + 10):
-                            self.board.place_road(self.currentPlayer, option)
+                            self.board.place_road(self.current_player, option)
 
     # quits game
     def quit(self):
