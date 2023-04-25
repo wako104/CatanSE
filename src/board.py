@@ -230,10 +230,8 @@ class Board:
                     else:
                         new_settlement = Settlement(player, option, adjacent)
                         self.existing_settlements.append(new_settlement)
-                        print(player.colour)
                         pygame.draw.circle(self.screen, player.colour, option, 10)
-                        print("settlement created")
-                        print(self.existing_settlements)
+                        print("settlement created for player " + str(player.num))
 
     # checks the number of placements a player has.
     def check_initial_placements(self, player, placement_type):
@@ -250,15 +248,50 @@ class Board:
     # Method to place a road on the board
     def place_road(self, player, option):
         error = 0
+        adjacent_settlement = []
+        adjacent_road = []
+
+        for vertex in option[1]:
+            for settlement in self.existing_settlements:
+                if settlement.location == vertex:
+                    adjacent_settlement.append(settlement)
+
+        for road in self.existing_roads:
+            for vertex in road.location[1]:
+                if vertex in option[1]:
+                    adjacent_road.append(road)
+
+        for road in adjacent_road:
+            if road.player == player:
+                error = 0
+                break
+            else:
+                error = 4
+
         # Check if the vertex is already taken, if not, draw a circle and update the dictionary
         for road in self.existing_roads:
             if road.location[0] == option[0]:
+                print("test1")
                 error = 1
+
+        for settlement in adjacent_settlement:
+            if settlement.player != player:
+                error = 2
+
+        if len(adjacent_settlement) == 0:
+            if len(adjacent_road) == 0:
+                error = 3
+
         if error == 1:
             print("Location not available")
-        else:
+        elif error == 2:
+            print("Cannot place a road next to enemy settlement.")
+        elif error == 3:
+            print("Must be next to your settlement or road.")
+        elif error == 4:
+            print("Must be next to your own road.")
+        elif error == 0:
             new_road = Road(player, option)
             self.existing_roads.append(new_road)
             pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
-            print("road created")
-            print(self.existing_roads)
+            print("Road created for player " + str(player.num))
