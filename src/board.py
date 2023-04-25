@@ -96,6 +96,7 @@ class Board:
             else:
                 pass
 
+
         # creates a list of unique tuples which represent coordinates of each vertex.
         # i.e. list of the coordinates for possible settlement locations
         for vertex in v:
