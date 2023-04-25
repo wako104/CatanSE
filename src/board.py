@@ -19,6 +19,7 @@ class Board:
         self.tiles += [CLAY, ORE] * 3
         self.tiles += [WHEAT, SHEEP, WOOD] * 4
         self.tiles += [SAND]
+        random.shuffle(self.tiles)
         # Will store each unique vertex on the board
         self.unique_v = []
         # Will store each vertex as a key with a list of adjacent resources as value
@@ -29,6 +30,7 @@ class Board:
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
         self.tokens = [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
+        random.shuffle(self.tokens)
         self.font = pygame.font.Font(pygame.font.get_default_font(), 30)
         # Will store the middle of each edge
         self.centre_edge = []
