@@ -85,7 +85,6 @@ class Board:
             if self.tiles[i] != SAND:
                 text = str(self.tokens[i])
                 dest = self.hex_centres[i]
-                print(text, dest)
                 place_text = self.font.render(text, 1, WHITE)
                 self.screen.blit(place_text, dest)
                 count += 1
