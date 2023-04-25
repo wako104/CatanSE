@@ -1,4 +1,5 @@
 from cards import Resource, Development
+import pygame
 
 FPS = 60
 TITLE = 'Settlers'
@@ -11,10 +12,11 @@ GRID_HEIGHT = HEIGHT / TILE_SIZE
 HEX_COLOUR = 255, 255, 255
 BLACK = 0,0,0
 WHITE = 255, 255, 255
+RED = 219, 46, 26
 
 CLAY = (230,111,45)
 ORE = (171,177,173)
-WHEAT = (225,169,39)
+WHEAT = (250,197,115)
 SHEEP = (149,182,8)
 WOOD = (133,94,66)
 SAND = (218,211,150)
@@ -46,3 +48,4 @@ O = 5
 P = 6
 Q = 3
 R = 11
+

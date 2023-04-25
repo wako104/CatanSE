@@ -86,16 +86,57 @@ class Board:
         desert = self.tiles.index(SAND)
         self.tokens.insert(desert, None)
 
+        offset_x = -15
+        offset_y = -40
+
         for i in range(19):
             if self.tiles[i] != SAND:
                 text = str(self.tokens[i])
                 dest = self.hex_centres[i]
-                place_text = self.font.render(text, 1, WHITE)
+                text_color = RED if self.tokens[i] in (6, 8) else WHITE
+                place_text = self.font.render(text, 1, text_color)
                 self.screen.blit(place_text, dest)
+
+                # draws image
+                tile_name = self.tiles[i]
+                if tile_name == CLAY:
+                    CLAY_img = pygame.image.load("../resources/clay.png")
+                    CLAY_img = pygame.transform.scale(CLAY_img, (30, 30))
+                    dest_offset = (dest[0] + offset_x, dest[1] + offset_y)
+                    self.screen.blit(CLAY_img, dest_offset)
+
+                elif tile_name == ORE:
+                    ORE_img = pygame.image.load("../resources/ore.png")
+                    ORE_img = pygame.transform.scale(ORE_img, (30, 30))
+                    dest_offset = (dest[0] + offset_x, dest[1] + offset_y)
+                    self.screen.blit(ORE_img, dest_offset)
+
+                elif tile_name == WHEAT:
+                    WHEAT_img = pygame.image.load("../resources/wheat.png")
+                    WHEAT_img = pygame.transform.scale(WHEAT_img, (30, 30))
+                    dest_offset = (dest[0] + offset_x, dest[1] + offset_y)
+                    self.screen.blit(WHEAT_img, dest_offset)
+
+                elif tile_name == SHEEP:
+                    SHEEP_img = pygame.image.load("../resources/sheep.png")
+                    SHEEP_img = pygame.transform.scale(SHEEP_img, (37, 37))
+                    dest_offset = (dest[0] + offset_x - 3, dest[1] + offset_y)
+                    self.screen.blit(SHEEP_img, dest_offset)
+
+                elif tile_name == WOOD:
+                    WOOD_img = pygame.image.load("../resources/wood.png")
+                    WOOD_img = pygame.transform.scale(WOOD_img, (30, 30))
+                    dest_offset = (dest[0] + offset_x, dest[1] + offset_y)
+                    self.screen.blit(WOOD_img, dest_offset)
+
                 count += 1
             else:
+                dest = self.hex_centres[i]
+                dest_offset = (dest[0] + offset_x, dest[1] + offset_y)
+                SAND_img = pygame.image.load("../resources/sand.png")
+                SAND_img = pygame.transform.scale(SAND_img, (30,30))
+                self.screen.blit(SAND_img, dest_offset)
                 pass
-
 
         # creates a list of unique tuples which represent coordinates of each vertex.
         # i.e. list of the coordinates for possible settlement locations
