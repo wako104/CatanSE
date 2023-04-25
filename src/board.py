@@ -6,6 +6,7 @@ import building
 from road import *
 from settings import *
 from building import Settlement
+import itertools
 
 
 class Board:
@@ -18,7 +19,6 @@ class Board:
         self.tiles += [CLAY, ORE] * 3
         self.tiles += [WHEAT, SHEEP, WOOD] * 4
         self.tiles += [SAND]
-        random.shuffle(self.tiles)
         # Will store each unique vertex on the board
         self.unique_v = []
         # Will store each vertex as a key with a list of adjacent resources as value
@@ -29,7 +29,6 @@ class Board:
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
         self.tokens = [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
-        random.shuffle(self.tokens)
         self.font = pygame.font.Font(pygame.font.get_default_font(), 30)
         # Will store the middle of each edge
         self.centre_edge = []
@@ -94,6 +93,16 @@ class Board:
                 text = str(self.tokens[i])
                 dest = self.hex_centres[i]
                 text_color = RED if self.tokens[i] in (6, 8) else WHITE
+
+                # Dropshadow effect
+                shadow_color = (64, 64, 64)  # A dark gray color for the shadow
+                shadow_offset = (2, 2)  # The offset for the shadow (x, y)
+                shadow_dest = (dest[0] + shadow_offset[0], dest[1] + shadow_offset[1])
+
+                place_text_shadow = self.font.render(text, 1, shadow_color)
+                self.screen.blit(place_text_shadow, shadow_dest)
+
+                # Original text
                 place_text = self.font.render(text, 1, text_color)
                 self.screen.blit(place_text, dest)
 
@@ -251,6 +260,3 @@ class Board:
             pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
             print("road created")
             print(self.existing_roads)
-
-
-

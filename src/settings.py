@@ -24,7 +24,7 @@ SAND = (218,211,150)
 PLAYERCOLOUR1 = (241,0,0)
 PLAYERCOLOUR2 = (18,147,255)
 PLAYERCOLOUR3 = (23,228,46)
-PLAYERCOLOUR4 = (23,228,46)
+PLAYERCOLOUR4 = (255, 165, 0)
 
 ROAD = [Resource.Wood, Resource.Brick]
 SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
