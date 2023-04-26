@@ -160,14 +160,14 @@ class Main:
             if count == 0:
                 self.board.place_road(player, location, True)
             else:
-                print("Cannot place another settlement on this turn")
+                print("Cannot place another road on this turn")
                 return -1
         elif self.turn_number == 2:
 
             if count == 1:
                 self.board.place_road(player, location, True)
             else:
-                print("Cannot place another settlement on this turn")
+                print("Cannot place another road on this turn")
                 return -1
         else:
             self.board.place_road(player, location, False)

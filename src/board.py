@@ -39,6 +39,7 @@ class Board:
         self.existing_roads = []
         # Store tile with resource
         self.hex_resource = defaultdict(list)
+        self.vertex_adjacent_centres = {}
         self.number_location = {}
 
     # draws the board
@@ -195,6 +196,7 @@ class Board:
                             if (vertex_2, vertex) not in self.edge_vertices:
                                 self.edge_vertices.append((vertex, vertex_2))
         self.get_edge_centres()
+        self.get_vertex_adjacent_centres()
 
     def get_edge_centres(self):
         for edge in self.edge_vertices:
@@ -202,6 +204,20 @@ class Board:
             new_y = math.floor((edge[0][1] + edge[1][1])/2)
             new_coord = (new_x, new_y)
             self.centre_edge.append((new_coord, edge))
+
+    def get_vertex_adjacent_centres(self):
+        for vertex in self.unique_v:
+            self.vertex_adjacent_centres[vertex] = []
+            for centre in self.hex_centres:
+                # Find the distance between vertex and centre of hex
+                distance = math.sqrt(abs(centre[0]-vertex[0])**2+abs(centre[1]-vertex[1])**2)
+                # Checks if the distance is close enough to be an adjacent centre
+                if distance < 70:
+                    # Check if the centre is in vertex_adjacent_centres
+                    if centre not in self.vertex_adjacent_centres[vertex]:
+                        self.vertex_adjacent_centres[vertex].append(centre)
+        print("Test")
+        print(self.vertex_adjacent_centres)
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location, initial_placement):
