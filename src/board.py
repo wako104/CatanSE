@@ -6,6 +6,7 @@ import building
 from road import *
 from settings import *
 from building import Settlement
+from building import City
 import itertools
 from collections import defaultdict
 
@@ -27,6 +28,7 @@ class Board:
         self.location_materials = {}
         # Will store the location of each existing settlement as an object of Settlement
         self.existing_settlements = []
+        self.exisiting_cities = []
         self.hex_centres = []
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
@@ -224,6 +226,7 @@ class Board:
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location, initial_placement):
+        owned = 0
 
         # check if the placement is not an initial placement
         if not initial_placement:
@@ -241,10 +244,6 @@ class Board:
                     return -1
                 else:
                     owned += 1
-
-            if owned == len(SETTLEMENT):
-                for required in SETTLEMENT:
-                    player.resources[required] -= 1
 
 
         # Checks whether the location given is close to one of the unique vertices on the board.
@@ -273,6 +272,9 @@ class Board:
                             = Settlement(player, option, adjacent_vertices, self.vertex_adjacent_centres[option], self)
                         self.existing_settlements.append(new_settlement)
                         pygame.draw.circle(self.screen, player.colour, option, 10)
+                        if owned == len(SETTLEMENT):
+                            for required in SETTLEMENT:
+                                player.resources[required] -= 1
                         player.add_victory_point()
                         print("settlement created for player " + str(player.num))
                         print("Player " + str(player.num) + " has " + str(player.get_victory_points()) + " victory points")
@@ -283,6 +285,7 @@ class Board:
     # Method to place a road on the board
     def place_road(self, player, option, initial_placement):
         error = 0
+        owned = 0
         adjacent_settlement = []
         adjacent_road = []
 
@@ -303,10 +306,6 @@ class Board:
                     return -1
                 else:
                     owned += 1
-
-            if owned == len(ROAD):
-                for required in ROAD:
-                    player.resources[required] -= 1
 
         for vertex in option[1]:
             for settlement in self.existing_settlements:
@@ -351,6 +350,9 @@ class Board:
             new_road = Road(player, option)
             self.existing_roads.append(new_road)
             pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
+            if owned == len(ROAD):
+                for required in ROAD:
+                    player.resources[required] -= 1
             print("Road created for player " + str(player.num))
 
     def harvest_resource(self, dice_number):
@@ -359,3 +361,16 @@ class Board:
                 for settlement in self.existing_settlements:
                     if location in settlement.adjacent_hex_centres:
                         settlement.collect_resource(location)
+
+    def build_city(self, player, option):
+        made = False
+        for settlement in self.existing_settlements:
+            if settlement.location == option and player == settlement.player:
+                new_city = City(settlement.player, settlement.location, settlement.adjacent_vertices, settlement.adjacent_hex_centres, settlement.board)
+                self.existing_cities.append(new_city)
+                self.existing_settlements.remove(settlement)
+                made = True
+            elif settlement.location == option:
+                print("Can only build a city on your own settlement.")
+        if not made:
+            print("Can only build a city over a settlement")

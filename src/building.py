@@ -18,7 +18,7 @@ class Settlement:
         self.player.get_resource(self.board.location_number_resource[location][1])
 
 class City:
-    def __init__(self):
+    def __init__(self, player, location, adjacent_vertices, adjacent_hex_centres, board):
         pass
 
 
