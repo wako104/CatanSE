@@ -7,6 +7,7 @@ from road import *
 from settings import *
 from building import Settlement
 import itertools
+from collections import defaultdict
 
 
 class Board:
@@ -37,7 +38,7 @@ class Board:
         # Will store all edges which already have a road
         self.existing_roads = []
         # Store tile with resource
-        self.hex_resource = []
+        self.hex_resource = defaultdict(list)
 
     # draws the board
     def draw(self):
@@ -86,6 +87,7 @@ class Board:
         # places the token number on each tile
         desert = self.tiles.index(SAND)
         self.tokens.insert(desert, None)
+        print(self.hex_resource)
 
         offset_x = -15
         offset_y = -40
@@ -148,6 +150,10 @@ class Board:
                 SAND_img = pygame.transform.scale(SAND_img, (30,30))
                 self.screen.blit(SAND_img, dest_offset)
                 pass
+
+        for tile, token in zip(self.tiles, self.tokens):
+            self.hex_resource[tile].append(token)
+        print(self.hex_resource)
 
         # creates a list of unique tuples which represent coordinates of each vertex.
         # i.e. list of the coordinates for possible settlement locations
