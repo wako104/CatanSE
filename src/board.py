@@ -257,7 +257,9 @@ class Board:
                         new_settlement = Settlement(player, option, adjacent)
                         self.existing_settlements.append(new_settlement)
                         pygame.draw.circle(self.screen, player.colour, option, 10)
+                        player.add_victory_point()
                         print("settlement created for player " + str(player.num))
+                        print("Player " + str(player.num) + " has " + str(player.get_victory_points()) + " victory points")
 
     def initial_resource_collection(self, player, settlement):
         pass

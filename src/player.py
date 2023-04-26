@@ -38,3 +38,9 @@ class Player:
     def remove_cards(self, cards):
         for card in cards:
             del self.cards[self.cards.index(card)]
+
+    def add_victory_point(self):
+        self.victory_points += 1
+
+    def get_victory_points(self):
+        return self.victory_points
