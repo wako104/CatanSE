@@ -5,6 +5,7 @@ from settings import *
 import sys
 from board import Board
 from player import Player
+from dice import Dice
 
 
 class Main:
@@ -17,6 +18,7 @@ class Main:
         self.num_players = 0
         self.players = []
         self.turn_number = 1
+        self.dice = Dice()
 
     # main function to run the game
     def run(self):
@@ -24,6 +26,7 @@ class Main:
         self.draw_end_turn_button()
         pygame.display.flip()
         self.running = True
+        self.dice.draw_default_dice()
 
         # loop to create list of objects of players
         for i in range(self.num_players):
@@ -124,6 +127,8 @@ class Main:
                     if location[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if location[1] in range(option[0][1] - 10, option[0][1] + 10):
                             self.handle_road(self.current_player, option)
+                if self.dice.dice_rect.collidepoint(location):
+                    self.dice.roll()
 
     def handle_settlement(self, player, location):
         count = 0
