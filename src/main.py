@@ -129,6 +129,7 @@ class Main:
                             self.handle_road(self.current_player, option)
                 if self.dice.dice_rect.collidepoint(location):
                     self.dice.roll()
+                    print(self.dice.total_dice_num())
 
     def handle_settlement(self, player, location):
         count = 0
