@@ -118,7 +118,11 @@ class Main:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.end_turn_button_rect.collidepoint(location):
-                    self.end_turn()
+                    if self.can_end_turn(self.current_player):
+                        self.end_turn()
+                    else:
+                        print("Cannot end turn")
+                        return -1
                 for option in self.board.unique_v:
                     if location[0] in range(option[0] - 10, option[0] + 10):
                         if location[1] in range(option[1] - 10, option[1] + 10):
@@ -131,10 +135,7 @@ class Main:
                     self.dice.roll()
 
     def handle_settlement(self, player, location):
-        count = 0
-        for settlement in self.board.existing_settlements:
-            if settlement.player == player:
-                count += 1
+        count = self.player_settlement_count(player)
 
         if self.turn_number == 1:
             if count == 0:
@@ -152,10 +153,7 @@ class Main:
             self.board.place_settlement(player, location, False)
 
     def handle_road(self, player, location):
-        count = 0
-        for road in self.board.existing_roads:
-            if road.player == player:
-                count += 1
+        count = self.player_road_count(player)
 
         if self.turn_number == 1:
             if count == 0:
@@ -164,6 +162,7 @@ class Main:
                 print("Cannot place another settlement on this turn")
                 return -1
         elif self.turn_number == 2:
+
             if count == 1:
                 self.board.place_road(player, location, True)
             else:
@@ -171,6 +170,34 @@ class Main:
                 return -1
         else:
             self.board.place_road(player, location, False)
+
+    def can_end_turn(self, player):
+        road_count = self.player_road_count(player)
+        settlement_count = self.player_settlement_count(player)
+        if self.turn_number == 1:
+            if road_count == 1 & settlement_count == 1:
+                return True
+            else:
+                return False
+        elif self.turn_number == 2:
+            if road_count == 2 & settlement_count == 2:
+                return True
+            else:
+                return False
+
+    def player_road_count(self, player):
+        count = 0
+        for road in self.board.existing_roads:
+            if road.player == player:
+                count += 1
+        return count
+
+    def player_settlement_count(self, player):
+        count = 0
+        for settlement in self.board.existing_settlements:
+            if settlement.player == player:
+                count += 1
+        return count
 
     # quits game
     def quit(self):

@@ -194,9 +194,6 @@ class Board:
             new_coord = (new_x, new_y)
             self.centre_edge.append((new_coord, edge))
 
-    def handle_place_settlement(self, player, location, turn_num):
-        pass
-
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, location, initial_placement):
 
