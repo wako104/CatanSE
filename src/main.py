@@ -24,7 +24,7 @@ class Main:
     # main function to run the game
     def run(self):
         self.board.draw()
-        self.draw_end_turn_button()
+
         pygame.display.flip()
         self.running = True
         self.dice.draw_default_dice()
@@ -43,6 +43,8 @@ class Main:
             text = font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
             self.board.screen.blit(text, (10, 10))
+            self.draw_resources()
+            self.draw_end_turn_button()
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -85,6 +87,35 @@ class Main:
         pygame.display.set_caption(TITLE)
         icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
+
+    def draw_resources(self):
+        pygame.draw.rect(self.board.screen, WHITE, (0, HEIGHT - 150, WIDTH, 150))
+        posx = 20
+        posy = HEIGHT - 135
+        r_clay2 = pygame.transform.scale(r_clay, (56.8, 87.8))
+        self.board.screen.blit(r_clay2, (posx, posy))
+        r_ore2 = pygame.transform.scale(r_ore, (56.8, 87.8))
+        self.board.screen.blit(r_ore2, (posx + 66.8, posy))
+        r_sheep2 = pygame.transform.scale(r_sheep, (56.8, 87.8))
+        self.board.screen.blit(r_sheep2, (posx + (66.8 * 2), posy))
+        r_wheat2 = pygame.transform.scale(r_wheat, (56.8, 87.8))
+        self.board.screen.blit(r_wheat2, (posx + (66.8 * 3), posy))
+        r_wood2 = pygame.transform.scale(r_wood, (56.8, 87.8))
+        self.board.screen.blit(r_wood2, (posx + (66.8 * 4), posy))
+
+        font = pygame.font.Font(pygame.font.get_default_font(), 30)
+        clay_text = font.render(str(self.current_player.resources[CLAY]), 1, BLACK)
+        ore_text = font.render(str(self.current_player.resources[ORE]), 1, BLACK)
+        sheep_text = font.render(str(self.current_player.resources[SHEEP]), 1, BLACK)
+        wheat_text = font.render(str(self.current_player.resources[WHEAT]), 1, BLACK)
+        wood_text = font.render(str(self.current_player.resources[WOOD]), 1, BLACK)
+
+        posx2 = 40.8
+        self.board.screen.blit(clay_text, (posx2, HEIGHT - 37.8))
+        self.board.screen.blit(ore_text, (posx2 + 67, HEIGHT - 37.8))
+        self.board.screen.blit(sheep_text, (posx2 + (67*2), HEIGHT - 37.8))
+        self.board.screen.blit(wheat_text, (posx2 + (67*3), HEIGHT - 37.8))
+        self.board.screen.blit(wood_text, (posx2 + (67*4), HEIGHT - 37.8))
 
     # creates end turn button
     def draw_end_turn_button(self):
@@ -189,6 +220,8 @@ class Main:
                 return True
             else:
                 return False
+        else:
+            return True
 
     def player_road_count(self, player):
         count = 0

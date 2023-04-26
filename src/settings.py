@@ -50,3 +50,8 @@ P = 6
 Q = 3
 R = 11
 
+r_clay = pygame.image.load('../resources/r_clay.jpg')
+r_ore = pygame.image.load('../resources/r_ore.jpg')
+r_sheep = pygame.image.load('../resources/r_sheep.jpg')
+r_wheat = pygame.image.load('../resources/r_wheat.jpg')
+r_wood = pygame.image.load('../resources/r_wood.jpg')
