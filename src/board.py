@@ -228,12 +228,24 @@ class Board:
         # check if the placement is not an initial placement
         if not initial_placement:
             # if it is not an initial placement, check the player has the correct cards
-            if not player.check_cards(SETTLEMENT):
-                print("Player does not have required cards")
-                return -1
-            else:
+            #if not player.check_cards(SETTLEMENT):
+                #print("Player does not have required cards")
+                #return -1
+            #else:
                 # if player has correct cards, remove them from their deck
-                player.remove_cards(SETTLEMENT)
+                #player.remove_cards(SETTLEMENT)
+            owned = 0
+            for required in SETTLEMENT:
+                if required not in player.resources.keys() or player.resources[required] < 1:
+                    print("Do not have required resources for a settlement")
+                    return -1
+                else:
+                    owned += 1
+
+            if owned == len(SETTLEMENT):
+                for required in SETTLEMENT:
+                    player.resources[required] -= 1
+
 
         # Checks whether the location given is close to one of the unique vertices on the board.
         error = 0
@@ -277,12 +289,24 @@ class Board:
         # check if the placement is not an initial placement
         if not initial_placement:
             # if it is not an initial placement, check the player has the correct cards
-            if not player.check_cards(ROAD):
-                print("Player does not have required cards")
-                return -1
-            else:
+            #if not player.check_cards(ROAD):
+                #print("Player does not have required cards")
+                #return -1
+            #else:
                 # if player has correct cards, remove them from their deck
-                player.remove_cards(ROAD)
+                #player.remove_cards(ROAD)
+
+            owned = 0
+            for required in ROAD:
+                if required not in player.resources.keys() or player.resources[required] < 1:
+                    print("Do not have required resources for a road")
+                    return -1
+                else:
+                    owned += 1
+
+            if owned == len(ROAD):
+                for required in ROAD:
+                    player.resources[required] -= 1
 
         for vertex in option[1]:
             for settlement in self.existing_settlements:

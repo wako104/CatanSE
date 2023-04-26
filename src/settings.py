@@ -25,8 +25,10 @@ PLAYERCOLOUR2 = (18,147,255)
 PLAYERCOLOUR3 = (23,228,46)
 PLAYERCOLOUR4 = (255, 165, 0)
 
-ROAD = [Resource.Wood, Resource.Brick]
-SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
+#ROAD = [Resource.Wood, Resource.Brick]
+# SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
+ROAD = [WOOD, CLAY]
+SETTLEMENT = [WOOD, CLAY, SHEEP, WHEAT]
 
 # board tokens
 A = 5
