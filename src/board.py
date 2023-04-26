@@ -194,10 +194,14 @@ class Board:
             new_coord = (new_x, new_y)
             self.centre_edge.append((new_coord, edge))
 
+    def handle_place_settlement(self, player, location, turn_num):
+        pass
+
     # method called when clicking on a location you want to place a settlement
-    def place_settlement(self, player, location):
+    def place_settlement(self, player, location, initial_placement):
+
         # check if the placement is not an initial placement
-        if not self.check_initial_placements(player, building.Settlement):
+        if not initial_placement:
             # if it is not an initial placement, check the player has the correct cards
             if not player.check_cards(SETTLEMENT):
                 print("Player does not have required cards")
@@ -233,23 +237,24 @@ class Board:
                         pygame.draw.circle(self.screen, player.colour, option, 10)
                         print("settlement created for player " + str(player.num))
 
-    # checks the number of placements a player has.
-    def check_initial_placements(self, player, placement_type):
-        count = 0
-        if placement_type == building.Settlement:
-            for settlement in self.existing_settlements:
-                if settlement.player == player:
-                    count += 1
-        if count < 2:
-            return True
-        else:
-            return False
+    def initial_resource_collection(self, player, settlement):
+        pass
 
     # Method to place a road on the board
-    def place_road(self, player, option):
+    def place_road(self, player, option, initial_placement):
         error = 0
         adjacent_settlement = []
         adjacent_road = []
+
+        # check if the placement is not an initial placement
+        if not initial_placement:
+            # if it is not an initial placement, check the player has the correct cards
+            if not player.check_cards(ROAD):
+                print("Player does not have required cards")
+                return -1
+            else:
+                # if player has correct cards, remove them from their deck
+                player.remove_cards(ROAD)
 
         for vertex in option[1]:
             for settlement in self.existing_settlements:
