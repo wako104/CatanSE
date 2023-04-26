@@ -21,6 +21,7 @@ class Player:
         self.cards = []
         # players victory points
         self.victory_points = 0
+        self.resources = []
 
     # check player has cards required
     def check_cards(self, cards):
@@ -44,3 +45,6 @@ class Player:
 
     def get_victory_points(self):
         return self.victory_points
+
+    def get_resource(self, resource):
+        self.resources.append(resource)

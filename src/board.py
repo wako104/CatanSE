@@ -40,7 +40,7 @@ class Board:
         # Store tile with resource
         self.hex_resource = defaultdict(list)
         self.vertex_adjacent_centres = {}
-        self.number_location = {}
+        self.location_number_resource = {}
 
     # draws the board
     def draw(self):
@@ -89,7 +89,6 @@ class Board:
         # places the token number on each tile
         desert = self.tiles.index(SAND)
         self.tokens.insert(desert, None)
-        print(self.hex_resource)
 
         offset_x = -15
         offset_y = -40
@@ -111,8 +110,6 @@ class Board:
                 # Original text
                 place_text = self.font.render(text, 1, text_color)
                 self.screen.blit(place_text, dest)
-
-                self.number_location[dest] = self.tokens[i]
 
                 # draws image
                 tile_name = self.tiles[i]
@@ -155,9 +152,15 @@ class Board:
                 self.screen.blit(SAND_img, dest_offset)
                 pass
 
+            self.location_number_resource[dest] = (self.tokens[i], self.tiles[i])
+
+        print(self.location_number_resource)
+        print("number location ^")
+
         for token, tile in zip(self.tokens, self.tiles):
             self.hex_resource[token].append(tile)
         print(self.hex_resource)
+        print("test1")
 
         # creates a list of unique tuples which represent coordinates of each vertex.d
         # i.e. list of the coordinates for possible settlement locations
@@ -234,7 +237,7 @@ class Board:
 
         # Checks whether the location given is close to one of the unique vertices on the board.
         error = 0
-        adjacent = []
+        adjacent_vertices = []
         for option in self.unique_v:
             if location[0] in range(option[0] - 10, option[0] + 10):
                 if location[1] in range(option[1] - 10, option[1] + 10):
@@ -242,19 +245,20 @@ class Board:
                     for settlement in self.existing_settlements:
                         if settlement.location == option:
                             error = 1
-                        elif option in settlement.adjacent:
+                        elif option in settlement.adjacent_vertices:
                             error = 2
                     for edge in self.edge_vertices:
                         if option in edge:
                             for vertex in edge:
                                 if vertex != option:
-                                    adjacent.append(vertex)
+                                    adjacent_vertices.append(vertex)
                     if error == 1:
                         print("Location not available")
                     elif error == 2:
                         print("Cannot place adjacent to another settlement.")
                     else:
-                        new_settlement = Settlement(player, option, adjacent)
+                        new_settlement\
+                            = Settlement(player, option, adjacent_vertices, self.vertex_adjacent_centres[option], self)
                         self.existing_settlements.append(new_settlement)
                         pygame.draw.circle(self.screen, player.colour, option, 10)
                         player.add_victory_point()
@@ -324,3 +328,10 @@ class Board:
             self.existing_roads.append(new_road)
             pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
             print("Road created for player " + str(player.num))
+
+    def harvest_resource(self, dice_number):
+        for location in self.location_number_resource:
+            if self.location_number_resource[location][0] == dice_number:
+                for settlement in self.existing_settlements:
+                    if location in settlement.adjacent_hex_centres:
+                        settlement.collect_resource(location)

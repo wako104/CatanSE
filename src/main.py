@@ -6,6 +6,7 @@ import sys
 from board import Board
 from player import Player
 from dice import Dice
+from building import Settlement
 
 
 class Main:
@@ -102,6 +103,8 @@ class Main:
         player_count = len(self.players)
         current_player_index = self.players.index(self.current_player)
         if current_player_index == player_count -1:
+            for player in self.players:
+                print("Player " + str(player.num) + " has " + str(player.resources))
             self.turn_number += 1
         self.current_player = self.players[(current_player_index + 1) % player_count]
         print("Player " + str(self.current_player.num))
@@ -133,6 +136,7 @@ class Main:
                             self.handle_road(self.current_player, option)
                 if self.dice.dice_rect.collidepoint(location):
                     self.dice.roll()
+                    self.board.harvest_resource(self.dice.total_dice_num())
                     print(self.dice.total_dice_num())
 
     def handle_settlement(self, player, location):
