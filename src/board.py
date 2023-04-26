@@ -39,6 +39,7 @@ class Board:
         self.existing_roads = []
         # Store tile with resource
         self.hex_resource = defaultdict(list)
+        self.number_location = {}
 
     # draws the board
     def draw(self):
@@ -110,6 +111,8 @@ class Board:
                 place_text = self.font.render(text, 1, text_color)
                 self.screen.blit(place_text, dest)
 
+                self.number_location[dest] = self.tokens[i]
+
                 # draws image
                 tile_name = self.tiles[i]
                 if tile_name == CLAY:
@@ -151,11 +154,11 @@ class Board:
                 self.screen.blit(SAND_img, dest_offset)
                 pass
 
-        for tile, token in zip(self.tiles, self.tokens):
-            self.hex_resource[tile].append(token)
+        for token, tile in zip(self.tokens, self.tiles):
+            self.hex_resource[token].append(tile)
         print(self.hex_resource)
 
-        # creates a list of unique tuples which represent coordinates of each vertex.
+        # creates a list of unique tuples which represent coordinates of each vertex.d
         # i.e. list of the coordinates for possible settlement locations
         for vertex in v:
             if vertex not in self.unique_v:
