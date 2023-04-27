@@ -1,6 +1,7 @@
 import math
 import pygame
 import random
+import pygame.font
 
 import building
 from road import *
@@ -28,7 +29,7 @@ class Board:
         self.location_materials = {}
         # Will store the location of each existing settlement as an object of Settlement
         self.existing_settlements = []
-        self.exisiting_cities = []
+        self.existing_cities = []
         self.hex_centres = []
         # Will store and array of tuples containing the vertices of each unique edge
         self.edge_vertices = []
