@@ -203,6 +203,7 @@ class Board:
                         if (vertex, vertex_2) not in self.edge_vertices:
                             if (vertex_2, vertex) not in self.edge_vertices:
                                 self.edge_vertices.append((vertex, vertex_2))
+
         self.get_edge_centres()
         self.get_vertex_adjacent_centres()
 

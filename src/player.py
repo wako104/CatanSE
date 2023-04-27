@@ -19,27 +19,10 @@ class Player:
         # initial road placements
         self.initial_placements = []
         # the cards a player has
-        self.cards = []
-        # players victory points
+        self.cards = {KNIGHT: 0, DEVELOPMENTROAD: 0, YEAROFPLENTY: 0, MONOPOLY: 0, VICTORYPOINT: 0}
+        # players victory point
         self.victory_points = 0
         self.resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
-
-    # check player has cards required
-    def check_cards(self, cards):
-        for card in cards:
-            if self.cards.count(card) == 0:
-                return False
-        return True
-
-    # add card(s) to players deck
-    def add_cards(self, cards):
-        for card in cards:
-            self.cards.append(card)
-
-    # remove card(s) from players deck
-    def remove_cards(self, cards):
-        for card in cards:
-            del self.cards[self.cards.index(card)]
 
     def add_victory_point(self):
         self.victory_points += 1

@@ -376,7 +376,7 @@ class Main:
                 for option in self.board.unique_v:
                     if location[0] in range(option[0] - 10, option[0] + 10):
                         if location[1] in range(option[1] - 10, option[1] + 10):
-                            self.handle_settlement(self.current_player, location)
+                            self.handle_settlement(self.current_player, option)
                 for option in self.board.centre_edge:
                     if location[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if location[1] in range(option[0][1] - 10, option[0][1] + 10):
@@ -476,6 +476,10 @@ class Main:
 
         if self.turn_number == 1:
             if count == 0:
+                if self.player_settlement_count(self.current_player) == 1:
+                    self.board.place_road(player, location, True)
+                else:
+                    print("Place settlement before road")
                 self.board.place_road(player, location, True)
             else:
                 print("Cannot place another road on this turn")
@@ -483,7 +487,21 @@ class Main:
         elif self.turn_number == 2:
 
             if count == 1:
-                self.board.place_road(player, location, True)
+                if self.player_settlement_count(self.current_player) == 2:
+                    player_settlements = self.player_settlements(self.current_player)
+                    required_locations = []
+
+                    for edge in self.board.centre_edge:
+                        if player_settlements[1].location in edge[1]:
+                            required_locations.append(edge[0])
+
+                    current_location = location[0]
+                    if current_location in required_locations:
+                        self.board.place_road(player, location, True)
+                    else:
+                        print("Location not available")
+                else:
+                    print("Place settlement before road")
             else:
                 print("Cannot place another road on this turn")
                 return -1
@@ -521,6 +539,13 @@ class Main:
             if settlement.player == player:
                 count += 1
         return count
+
+    def player_settlements(self, player):
+        player_settlements = []
+        for settlement in self.board.existing_settlements:
+            if settlement.player == self.current_player:
+                player_settlements.append(settlement)
+        return player_settlements
 
     def request_trade(self, receive, give):
         for resource, amount in receive.items():
