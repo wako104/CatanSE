@@ -214,6 +214,11 @@ class Main:
                 self.end_turn()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
+                if self.turn_number > 2:
+                    if not self.dice.dice_rect.collidepoint(location):
+                        if self.dice_count < 1:
+                            print("Roll dice first")
+                            return -1
                 if self.end_turn_button_rect.collidepoint(location):
                     if self.can_end_turn(self.current_player):
                         self.dice_count = 0
@@ -292,6 +297,7 @@ class Main:
             else:
                 return False
         elif self.dice_count < 1:
+            print("Roll dice first")
             return False
         else:
             return True
