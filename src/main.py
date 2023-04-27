@@ -1,5 +1,6 @@
 import pygame
 import math
+import pygame_gui
 
 from settings import *
 import sys
@@ -45,6 +46,7 @@ class Main:
             self.board.screen.blit(turn_number_text, (10, 10))
             self.draw_resources()
             current_player_text = self.font.render("Player : " + str(self.current_player.num), 1, (255, 255, 255))
+            pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
             self.draw_end_turn_button()
             self.clock.tick(FPS)
@@ -56,32 +58,58 @@ class Main:
         self.visual()
         screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Main Menu")
-        screen.fill(BG_COLOUR)
-        font = pygame.font.Font("../resources/Retro Gaming.ttf", 22)
-        text = font.render("Press 1-4 for the number of players.", 1, WHITE)
 
-        # ask user how many players will be in the game and store the value
-        while True:
+        background_image = pygame.image.load("../resources/catan.jpg")
+        background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+        logo_image = pygame.image.load("../resources/the_settlers.png")
+        logo_rect = logo_image.get_rect()
+        logo_rect.centerx = WIDTH // 2
+        logo_rect.y = 60
+
+        manager = pygame_gui.UIManager((WIDTH, HEIGHT))
+
+        text = self.font.render("Select the number of players.", 1, WHITE)
+        shadow_text = self.font.render("Select the number of players.", 1, (50, 50, 50))
+
+        drop_down_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 50, 200, 40)
+        drop_down_button = pygame_gui.elements.UIDropDownMenu(
+            options_list=['Select players', '1 Player', '2 Players', '3 Players', '4 Players'],
+            starting_option='Select players',
+            relative_rect=drop_down_button_rect,
+        )
+
+        running = True
+        while running:
+            time_delta = pygame.time.Clock().tick(60) / 1000.0
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key in [pygame.K_1, pygame.K_KP1]:
-                        self.num_players = 1
-                        self.run()
-                    elif event.key in [pygame.K_2, pygame.K_KP2]:
-                        self.num_players = 2
-                        self.run()
-                    elif event.key in [pygame.K_3, pygame.K_KP3]:
-                        self.num_players = 3
-                        self.run()
-                    elif event.key in [pygame.K_4, pygame.K_KP4]:
-                        self.num_players = 4
-                        self.run()
+
+                if event.type == pygame.USEREVENT:
+                    if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+                        if event.ui_element == drop_down_button:
+                            if event.text != 'Select players':
+                                self.num_players = int(event.text[0])
+                                self.run()
+                                running = False
+
+                manager.process_events(event)
+
+            screen.blit(background_image, (0, 0))
+            screen.blit(logo_image, logo_rect)
+
+            shadow_text_rect = shadow_text.get_rect()
+            shadow_text_rect.center = (WIDTH // 2 + 2, HEIGHT // 2 + 2)
+            screen.blit(shadow_text, shadow_text_rect)
 
             text_rect = text.get_rect()
             text_rect.center = (WIDTH // 2, HEIGHT // 2)
             screen.blit(text, text_rect)
+
+            manager.update(time_delta)
+            manager.draw_ui(screen)
+
             pygame.display.update()
 
     # initialises some visual stuff like the title and icon
