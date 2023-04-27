@@ -234,13 +234,6 @@ class Board:
 
         # check if the placement is not an initial placement
         if not initial_placement:
-            # if it is not an initial placement, check the player has the correct cards
-            #if not player.check_cards(SETTLEMENT):
-                #print("Player does not have required cards")
-                #return -1
-            #else:
-                # if player has correct cards, remove them from their deck
-                #player.remove_cards(SETTLEMENT)
             owned = 0
             for required in SETTLEMENT:
                 if required not in player.resources.keys() or player.resources[required] < 1:
@@ -295,14 +288,6 @@ class Board:
 
         # check if the placement is not an initial placement
         if not initial_placement:
-            # if it is not an initial placement, check the player has the correct cards
-            #if not player.check_cards(ROAD):
-                #print("Player does not have required cards")
-                #return -1
-            #else:
-                # if player has correct cards, remove them from their deck
-                #player.remove_cards(ROAD)
-
             owned = 0
             for required in ROAD:
                 if required not in player.resources.keys() or player.resources[required] < 1:
