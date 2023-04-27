@@ -1,6 +1,7 @@
 import pygame
 import math
 import pygame_gui
+from pygame import MOUSEBUTTONDOWN
 
 from settings import *
 import sys
@@ -31,7 +32,7 @@ class Main:
         self.sheep_r = 0
         self.wheat_r = 0
         self.wood_r = 0
-        self.counter_box_t = None
+        self.counter_box_s = None
         self.counter_box_l = None
         self.counter_box_w = None
         self.counter_box_o = None
@@ -74,6 +75,10 @@ class Main:
         self.colour3 = (173,228,206)
         self.colour4 = (255, 235, 150)
         self.trade_with = None
+        self.placed_init_settlement = False
+        self.placed_init_road = False
+        self.settlement_button_colour = (200, 150, 200)
+        self.road_button_colour = (200, 150, 200)
 
     # main function to run the game
     def run(self):
@@ -102,6 +107,8 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
             self.draw_end_turn_button()
+            self.draw_settlement_button()
+            self.draw_road_button()
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -187,9 +194,11 @@ class Main:
 
         # Define the positions and sizes of the button and text
         button_rect = pygame.Rect(xpos, 60, 200, 315)
+        button_rect_border = pygame.Rect(xpos - 5, 60 - 5, 200 + 10, 315 + 10)
         text_rect = pygame.Rect(xpos2 - 20, 95, 20, 20)
 
         # Draw the button and text
+        pygame.draw.rect(self.board.screen, WHITE, button_rect_border)
         pygame.draw.rect(self.board.screen, button_colour, button_rect)
         self.board.screen.blit(self.font.render("Send", True, text_colour), text_rect)
         self.board.screen.blit(self.font.render("Receive", True, text_colour), (xpos2 - 20, 185))
@@ -342,12 +351,36 @@ class Main:
     def draw_end_turn_button(self):
         button_width, button_height = 100, 50
         button_x = WIDTH - button_width - 10
-        button_y = HEIGHT - button_height - 10
+        button_y = HEIGHT - button_height - 50
         self.end_turn_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
         pygame.draw.rect(self.board.screen, (255, 0, 0), self.end_turn_button_rect)
         font = pygame.font.Font(None, 24)
         text = font.render("End Turn", 1, (255, 255, 255))
         text_pos = text.get_rect(center=self.end_turn_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    def draw_settlement_button(self):
+        pos_x = WIDTH - 350
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 87.8
+        self.settlement_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        self.settlement_button_colour2 = (200, 65, 200)
+        pygame.draw.rect(self.board.screen, self.settlement_button_colour, self.settlement_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Settlement", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.settlement_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    def draw_road_button(self):
+        pos_x = WIDTH - 230
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 87.8
+        self.road_button_colour2 = (200, 65, 200)
+        self.road_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.road_button_colour, self.road_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Road", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.road_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
     # ends turn
@@ -359,6 +392,20 @@ class Main:
                 print("Player " + str(player.num) + " has " + str(player.resources))
             self.turn_number += 1
         self.current_player = self.players[(current_player_index + 1) % player_count]
+        self.colour1 = (241, 140, 140)
+        self.colour2 = (170, 235, 255)
+        self.colour3 = (173, 228, 206)
+        self.colour4 = (255, 235, 150)
+        self.clay_t = 0
+        self.ore_t = 0
+        self.sheep_t = 0
+        self.wheat_t = 0
+        self.wood_t = 0
+        self.clay_r = 0
+        self.ore_r = 0
+        self.sheep_r = 0
+        self.wheat_r = 0
+        self.wood_r = 0
         print("Player " + str(self.current_player.num))
 
     # checks for game updates
@@ -370,6 +417,13 @@ class Main:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            if self.turn_number < 3:
+                self.update()
+                self.handle_settlement(self.current_player)
+                self.update()
+                self.handle_road(self.current_player)
+                self.update()
+                self.end_turn()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.turn_number > 2:
@@ -384,14 +438,10 @@ class Main:
                     else:
                         print("Cannot end turn")
                         return -1
-                for option in self.board.unique_v:
-                    if location[0] in range(option[0] - 10, option[0] + 10):
-                        if location[1] in range(option[1] - 10, option[1] + 10):
-                            self.handle_settlement(self.current_player, option)
-                for option in self.board.centre_edge:
-                    if location[0] in range(option[0][0] - 10, option[0][0] + 10):
-                        if location[1] in range(option[0][1] - 10, option[0][1] + 10):
-                            self.handle_road(self.current_player, option)
+                if self.settlement_button_rect.collidepoint(location):
+                    self.handle_settlement(self.current_player)
+                elif self.road_button_rect.collidepoint(location):
+                    self.handle_road(self.current_player)
                 if self.dice.dice_rect.collidepoint(location):
                     if self.turn_number > 2:
                         if not self.dice_count > 0:
@@ -417,6 +467,11 @@ class Main:
                     self.wood_r = 0
                     self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
                     self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                    self.colour1 = (241, 140, 140)
+                    self.colour2 = (170, 235, 255)
+                    self.colour3 = (173, 228, 206)
+                    self.colour4 = (255, 235, 150)
+                    self.trade_with = None
 
                 if self.resource_box_c.collidepoint(location):
                     self.clay_t += 1
@@ -440,17 +495,28 @@ class Main:
                     self.wood_r += 1
 
                 if self.send_trade_rect.collidepoint(location):
-                    print("Trade request")
-                    req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
-                    give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
-                    self.request_trade(req, give)
-                    print(req)
-                    print(give)
-                    self.colour1 = (241, 140, 140)
-                    self.colour2 = (170, 235, 255)
-                    self.colour3 = (173, 228, 206)
-                    self.colour4 = (255, 235, 150)
-                    self.draw_accept_trade_offer()
+                    if self.trade_with != None:
+                        req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
+                        give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
+
+                        req_zero = all(val == 0 for val in req.values())
+                        give_zero = all(val == 0 for val in give.values())
+
+                        if req_zero and give_zero:
+                            pass
+
+                        elif all(req[key] <= self.trade_with.resources[key] for key in req) and all(give[key] <= self.current_player.resources[key] for key in give):
+                            self.request_trade(req, give)
+                            self.colour1 = (241, 140, 140)
+                            self.colour2 = (170, 235, 255)
+                            self.colour3 = (173, 228, 206)
+                            self.colour4 = (255, 235, 150)
+                            self.draw_accept_trade_offer()
+
+                        else:
+                            print("Players do not have required resources to trade!")
+                    else:
+                        pass
 
                 if self.player1_rect.collidepoint(location):
                     if self.red_counter == 1:
@@ -508,6 +574,16 @@ class Main:
                     accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
                     pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
                     self.trade_with = None
+                    self.clay_t = 0
+                    self.ore_t = 0
+                    self.sheep_t = 0
+                    self.wheat_t = 0
+                    self.wood_t = 0
+                    self.clay_r = 0
+                    self.ore_r = 0
+                    self.sheep_r = 0
+                    self.wheat_r = 0
+                    self.wood_r = 0
 
                 if self.yes_button_rect.collidepoint(location):
                     self.accept_trade(self.current_player, self.trade_with)
@@ -515,13 +591,6 @@ class Main:
                     accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
                     pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
                     self.trade_with = None
-
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                print("trade")
-                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD: 0}
-                give = {CLAY: 1, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
-                self.request_trade(req, give)
-                self.accept_trade(self.current_player, self.players[1])
 
     def draw_accept_trade_offer(self):
         player_rect_width = 30
@@ -568,60 +637,87 @@ class Main:
                 pygame.draw.rect(self.board.screen, player_colours[i], player_rects[i])
                 self.board.screen.blit(self.font.render(f"P{i + 1}", True, BLACK), player_rects[i])
 
-    def handle_settlement(self, player, location):
+    def handle_settlement(self, player):
         count = self.player_settlement_count(player)
 
         if self.turn_number == 1:
             if count == 0:
-                self.board.place_settlement(player, location, True)
+                self.board.place_settlement(player, True)
             else:
                 print("Cannot place another settlement on this turn")
                 return -1
         elif self.turn_number == 2:
             if count == 1:
-                self.board.place_settlement(player, location, True)
+                self.board.place_settlement(player, True)
             else:
                 print("Cannot place another settlement on this turn")
                 return -1
         else:
-            self.board.place_settlement(player, location, False)
+            self.board.place_settlement(player, False)
 
-    def handle_road(self, player, location):
+        pygame.mouse.set_cursor(pygame.cursors.arrow)
+
+    def handle_road(self, player):
         count = self.player_road_count(player)
-
         if self.turn_number == 1:
-            if count == 0:
-                if self.player_settlement_count(self.current_player) == 1:
-                    self.board.place_road(player, location, True)
-                else:
-                    print("Place settlement before road")
-                self.board.place_road(player, location, True)
-            else:
-                print("Cannot place another road on this turn")
+            if count == 1:
+                print("Cannot place another road this turn")
                 return -1
         elif self.turn_number == 2:
-
-            if count == 1:
-                if self.player_settlement_count(self.current_player) == 2:
-                    player_settlements = self.player_settlements(self.current_player)
-                    required_locations = []
-
-                    for edge in self.board.centre_edge:
-                        if player_settlements[1].location in edge[1]:
-                            required_locations.append(edge[0])
-
-                    current_location = location[0]
-                    if current_location in required_locations:
-                        self.board.place_road(player, location, True)
-                    else:
-                        print("Location not available")
-                else:
-                    print("Place settlement before road")
-            else:
-                print("Cannot place another road on this turn")
+            if count == 2:
+                print("Cannot place another road this turn")
                 return -1
-        else:
-            self.board.place_road(player, location, False)
+        print("test")
+        pygame.mouse.set_cursor(pygame.cursors.ball)
+        wait = pygame.event.wait()
+        while wait.type != MOUSEBUTTONDOWN:
+            wait = pygame.event.wait()
+        if wait.type == MOUSEBUTTONDOWN:
+            mouse_loc = pygame.mouse.get_pos()
+            print(mouse_loc)
+            for option in self.board.centre_edge:
+                if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
+                    if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
+                        if self.turn_number == 1:
+                            if count == 0:
+                                if self.player_settlement_count(self.current_player) == 1:
+                                    self.board.place_road(player, option, True)
+                                else:
+                                    print("Place settlement before road")
+                            else:
+                                print("Cannot place another road on this turn")
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                return -1
+                        elif self.turn_number == 2:
+
+                            if count == 1:
+                                if self.player_settlement_count(self.current_player) == 2:
+                                    player_settlements = self.player_settlements(self.current_player)
+                                    required_locations = []
+
+                                    for edge in self.board.centre_edge:
+                                        if player_settlements[1].location in edge[1]:
+                                            required_locations.append(edge[0])
+
+                                    current_location = option[0]
+                                    if current_location in required_locations:
+                                        self.board.place_road(player, option, True)
+                                    else:
+                                        print("test")
+                                        print("Must place next to your most recent settlement")
+                                        pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                        return -1
+                                else:
+                                    print("Place settlement before road")
+                                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                    return -1
+                            else:
+                                print("Cannot place another road on this turn")
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                return -1
+                        else:
+                            self.board.place_road(player,option, False)
+        pygame.mouse.set_cursor(pygame.cursors.arrow)
 
     def can_end_turn(self, player):
         road_count = self.player_road_count(player)
