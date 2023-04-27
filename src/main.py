@@ -20,6 +20,7 @@ class Main:
         self.players = []
         self.turn_number = 1
         self.dice = Dice()
+        self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
 
     # main function to run the game
     def run(self):
@@ -39,11 +40,12 @@ class Main:
 
         # loops to keep game running and updating until it is closed
         while self.running:
-            font = pygame.font.Font(None, 24)
-            text = font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
+            turn_number_text = self.font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
-            self.board.screen.blit(text, (10, 10))
+            self.board.screen.blit(turn_number_text, (10, 10))
             self.draw_resources()
+            current_player_text = self.font.render("Player : " + str(self.current_player.num), 1, (255, 255, 255))
+            self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
             self.draw_end_turn_button()
             self.clock.tick(FPS)
             self.visual()
