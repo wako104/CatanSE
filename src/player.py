@@ -50,3 +50,12 @@ class Player:
     def get_resource(self, resource):
         if resource in self.resources.keys():
             self.resources[resource] += 1
+
+    def receive_trade(self, resource_dictionary):
+        for resource, amount in resource_dictionary.items():
+            self.resources[resource] += amount
+
+    def send_trade(self, resource_dictionary):
+        for resource, amount in resource_dictionary.items():
+            self.resources[resource] -= amount
+

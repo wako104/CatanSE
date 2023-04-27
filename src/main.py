@@ -13,6 +13,43 @@ from building import Settlement
 class Main:
 
     def __init__(self):
+        self.player4_rect = None
+        self.player3_rect = None
+        self.player2_rect = None
+        self.player1_rect = None
+        self.send_trade_rect = None
+        self.reset_rect = None
+        self.clay_t = 0
+        self.ore_t = 0
+        self.sheep_t = 0
+        self.wheat_t = 0
+        self.wood_t = 0
+        self.clay_r = 0
+        self.ore_r = 0
+        self.sheep_r = 0
+        self.wheat_r = 0
+        self.wood_r = 0
+        self.counter_box_s = None
+        self.counter_box_l = None
+        self.counter_box_w = None
+        self.counter_box_o = None
+        self.counter_box_c = None
+        self.resource_box_l = None
+        self.resource_box_w = None
+        self.resource_box_s = None
+        self.resource_box_o = None
+        self.resource_box_c = None
+        self.counter_box_s2 = None
+        self.counter_box_l2 = None
+        self.counter_box_w2 = None
+        self.counter_box_o2 = None
+        self.counter_box_c2 = None
+        self.resource_box_l2 = None
+        self.resource_box_w2 = None
+        self.resource_box_s2 = None
+        self.resource_box_o2 = None
+        self.resource_box_c2 = None
+        self.resource_positions = None
         pygame.init()
         self.board = Board(WIDTH, HEIGHT)
         self.clock = pygame.time.Clock()
@@ -23,6 +60,14 @@ class Main:
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
         self.dice_count = 0
+        self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.red_counter = 0
+        self.colour1 = (241,140,140)
+        self.colour2 = (170,235,255)
+        self.colour3 = (173,228,206)
+        self.colour4 = (255, 235, 150)
+        self.trade_with = None
 
     # main function to run the game
     def run(self):
@@ -46,6 +91,7 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
             self.board.screen.blit(turn_number_text, (10, 10))
             self.draw_resources()
+            self.draw_trade_button()
             current_player_text = self.font.render("Player : " + str(self.current_player.num), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
@@ -118,6 +164,144 @@ class Main:
         pygame.display.set_caption(TITLE)
         icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
+
+    def draw_trade_button(self):
+        # Define the colors for the button and text
+        button_colour = (200, 200, 200)
+        text_colour = (0, 0, 0)
+        resource_colour = (0, 200, 0)
+
+        xpos = WIDTH - 250
+        xpos2 = xpos + 30
+        ypos = 120
+        ypos2 = 145
+
+        ypos3 = ypos + 90
+        ypos4 = ypos2 + 90
+
+        # Define the positions and sizes of the button and text
+        button_rect = pygame.Rect(xpos, 60, 200, 315)
+        text_rect = pygame.Rect(xpos2 - 20, 95, 20, 20)
+
+        # Draw the button and text
+        pygame.draw.rect(self.board.screen, button_colour, button_rect)
+        self.board.screen.blit(self.font.render("Send", True, text_colour), text_rect)
+        self.board.screen.blit(self.font.render("Receive", True, text_colour), (xpos2 - 20, 185))
+
+        # Define the positions and sizes of the resource counters
+        self.resource_positions = {
+            "C": (xpos2, ypos),
+            "O": (xpos2 + 30, ypos),
+            "S": (xpos2 + (30 * 2), ypos),
+            "W": (xpos2 + (30 * 3), ypos),
+            "P": (xpos2 + (30 * 4), ypos)
+        }
+
+        self.resource_box_c = pygame.Rect(xpos2, ypos, 20, 20)
+        self.resource_box_o = pygame.Rect(xpos2 + 30, ypos, 20, 20)
+        self.resource_box_s = pygame.Rect(xpos2 + (30*2), ypos, 20, 20)
+        self.resource_box_w = pygame.Rect(xpos2 + (30*3), ypos, 20, 20)
+        self.resource_box_l = pygame.Rect(xpos2 + (30*4), ypos, 20, 20)
+
+        self.counter_box_c = pygame.Rect(xpos2, ypos2, 20, 20)
+        self.counter_box_o = pygame.Rect(xpos2 + 30, ypos2, 20, 20)
+        self.counter_box_s = pygame.Rect(xpos2 + (30*2), ypos2, 20, 20)
+        self.counter_box_w = pygame.Rect(xpos2 + (30*3), ypos2, 20, 20)
+        self.counter_box_l = pygame.Rect(xpos2 + (30*4), ypos2, 20, 20)
+
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_c)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_o)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_s)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_w)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_l)
+
+        self.board.screen.blit(self.font.render(str(self.clay_t), 1, text_colour), self.counter_box_c)
+        self.board.screen.blit(self.font.render(str(self.ore_t), 1, text_colour), self.counter_box_o)
+        self.board.screen.blit(self.font.render(str(self.sheep_t), 1, text_colour), self.counter_box_s)
+        self.board.screen.blit(self.font.render(str(self.wheat_t), 1, text_colour), self.counter_box_w)
+        self.board.screen.blit(self.font.render(str(self.wood_t), 1, text_colour), self.counter_box_l)
+
+        self.board.screen.blit(self.font.render("C", 1, text_colour), self.resource_box_c)
+        self.board.screen.blit(self.font.render("O", 1, text_colour), self.resource_box_o)
+        self.board.screen.blit(self.font.render("S", 1, text_colour), self.resource_box_s)
+        self.board.screen.blit(self.font.render("W", 1, text_colour), self.resource_box_w)
+        self.board.screen.blit(self.font.render("L", 1, text_colour), self.resource_box_l)
+
+        self.resource_box_c2 = pygame.Rect(xpos2, ypos3, 20, 20)
+        self.resource_box_o2 = pygame.Rect(xpos2 + 30, ypos3, 20, 20)
+        self.resource_box_s2 = pygame.Rect(xpos2 + (30 * 2), ypos3, 20, 20)
+        self.resource_box_w2 = pygame.Rect(xpos2 + (30 * 3), ypos3, 20, 20)
+        self.resource_box_l2 = pygame.Rect(xpos2 + (30 * 4), ypos3, 20, 20)
+
+        self.counter_box_c2 = pygame.Rect(xpos2, ypos4, 20, 20)
+        self.counter_box_o2 = pygame.Rect(xpos2 + 30, ypos4, 20, 20)
+        self.counter_box_s2 = pygame.Rect(xpos2 + (30 * 2), ypos4, 20, 20)
+        self.counter_box_w2 = pygame.Rect(xpos2 + (30 * 3), ypos4, 20, 20)
+        self.counter_box_l2 = pygame.Rect(xpos2 + (30 * 4), ypos4, 20, 20)
+
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_c2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_o2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_s2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_w2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_l2)
+
+        self.board.screen.blit(self.font.render(str(self.clay_r), 1, text_colour), self.counter_box_c2)
+        self.board.screen.blit(self.font.render(str(self.ore_r), 1, text_colour), self.counter_box_o2)
+        self.board.screen.blit(self.font.render(str(self.sheep_r), 1, text_colour), self.counter_box_s2)
+        self.board.screen.blit(self.font.render(str(self.wheat_r), 1, text_colour), self.counter_box_w2)
+        self.board.screen.blit(self.font.render(str(self.wood_r), 1, text_colour), self.counter_box_l2)
+
+        self.board.screen.blit(self.font.render("C", 1, text_colour), self.resource_box_c2)
+        self.board.screen.blit(self.font.render("O", 1, text_colour), self.resource_box_o2)
+        self.board.screen.blit(self.font.render("S", 1, text_colour), self.resource_box_s2)
+        self.board.screen.blit(self.font.render("W", 1, text_colour), self.resource_box_w2)
+        self.board.screen.blit(self.font.render("L", 1, text_colour), self.resource_box_l2)
+
+        trade_with_rect = pygame.Rect(xpos2 - 20, ypos3 + 55, 140, 25)
+        self.board.screen.blit(self.font.render("Trade with:", True, text_colour), trade_with_rect)
+
+        self.reset_rect = pygame.Rect(xpos2 + 90, 70, 70, 25)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.reset_rect)
+        self.board.screen.blit(self.font.render("Reset", True, text_colour), self.reset_rect)
+
+        self.send_trade_rect = pygame.Rect(xpos2 - 20, ypos3 + 130, 140, 25)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.send_trade_rect)
+        self.board.screen.blit(self.font.render("Offer Trade", True, text_colour), self.send_trade_rect)
+
+        # Define the positions and sizes of the player text and rectangles
+        player_rect_width = 30
+        player_rect_height = 30
+        y_pos_player = 272 + 25
+        self.player1_rect = pygame.Rect(xpos2-20, y_pos_player, player_rect_width, player_rect_height)
+        self.player2_rect = pygame.Rect(xpos2-20 + player_rect_width + 10, y_pos_player, player_rect_width, player_rect_height)
+        self.player3_rect = pygame.Rect(xpos2-20 + (player_rect_width + 10) * 2, y_pos_player, player_rect_width, player_rect_height)
+        self.player4_rect = pygame.Rect(xpos2-20 + (player_rect_width + 10) * 3, y_pos_player, player_rect_width, player_rect_height)
+
+        # Determine how many players to display
+        if self.num_players == 4:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, self.player3_rect)
+            pygame.draw.rect(self.board.screen, self.colour4, self.player4_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
+            self.board.screen.blit(self.font.render("P4", True, BLACK), self.player4_rect)
+        elif self.num_players == 3:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, self.player3_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
+        elif self.num_players == 2:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+        else:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
 
     def draw_resources(self):
         pygame.draw.rect(self.board.screen, WHITE, (0, HEIGHT - 150, WIDTH, 150))
@@ -209,6 +393,65 @@ class Main:
                     else:
                         print("Cannot roll dice until initial placements have been made.")
 
+                if self.reset_rect.collidepoint(location):
+                    self.clay_t = 0
+                    self.ore_t = 0
+                    self.sheep_t = 0
+                    self.wheat_t = 0
+                    self.wood_t = 0
+                    self.clay_r = 0
+                    self.ore_r = 0
+                    self.sheep_r = 0
+                    self.wheat_r = 0
+                    self.wood_r = 0
+                    self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                    self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+
+                if self.resource_box_c.collidepoint(location):
+                    self.clay_t += 1
+                if self.resource_box_o.collidepoint(location):
+                    self.ore_t += 1
+                if self.resource_box_s.collidepoint(location):
+                    self.sheep_t += 1
+                if self.resource_box_w.collidepoint(location):
+                    self.wheat_t += 1
+                if self.resource_box_l.collidepoint(location):
+                    self.wood_t += 1
+                if self.resource_box_c2.collidepoint(location):
+                    self.clay_r += 1
+                if self.resource_box_o2.collidepoint(location):
+                    self.ore_r += 1
+                if self.resource_box_s2.collidepoint(location):
+                    self.sheep_r += 1
+                if self.resource_box_w2.collidepoint(location):
+                    self.wheat_r += 1
+                if self.resource_box_l2.collidepoint(location):
+                    self.wood_r += 1
+
+                if self.send_trade_rect.collidepoint(location):
+                    print("Trade request")
+                    req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
+                    give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
+                    self.request_trade(req, give)
+                    print(req)
+                    print(give)
+
+                if self.player1_rect.collidepoint(location):
+                    if self.red_counter == 1:
+                        self.colour1 = (241,140,140)
+                        self.red_counter = 0
+                        self.trade_with = self.players[0]
+                    else:
+                        self.colour1 = PLAYERCOLOUR1
+                        self.red_counter = 1
+                        self.trade_with = None
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                print("trade")
+                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD:0}
+                give = {CLAY: 1, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                self.request_trade(req, give)
+                self.accept_trade(self.current_player, self.players[1])
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
@@ -278,6 +521,20 @@ class Main:
             if settlement.player == player:
                 count += 1
         return count
+
+    def request_trade(self, receive, give):
+        for resource, amount in receive.items():
+            self.receive_resources[resource] += amount
+        for resource, amount in give.items():
+            self.give_resources[resource] += amount
+
+    def accept_trade(self, player1, player2):
+        player1.send_trade(self.give_resources)
+        player1.receive_trade(self.receive_resources)
+        player2.send_trade(self.receive_resources)
+        player2.receive_trade(self.give_resources)
+        self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
 
     # quits game
     def quit(self):
