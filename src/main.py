@@ -23,6 +23,8 @@ class Main:
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
         self.dice_count = 0
+        self.placed_init_settlement = False
+        self.placed_init_road = False
 
     # main function to run the game
     def run(self):
@@ -50,6 +52,8 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
             self.draw_end_turn_button()
+            self.draw_settlement_button()
+            self.draw_road_button()
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -160,6 +164,28 @@ class Main:
         text_pos = text.get_rect(center=self.end_turn_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
+    def draw_settlement_button(self):
+        pos_x = 20 + (66.8*5)
+        pos_y = HEIGHT - 135
+        button_width, button_height = 100, 87.8
+        self.settlement_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, (200, 150, 200), self.settlement_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Settlement", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.settlement_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    def draw_road_button(self):
+        pos_x = 20 + (66.8*7)
+        pos_y = HEIGHT - 135
+        button_width, button_height = 100, 87.8
+        self.road_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, (200, 150, 200), self.road_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Road", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.road_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
     # ends turn
     def end_turn(self):
         player_count = len(self.players)
@@ -180,6 +206,11 @@ class Main:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            while self.turn_number < 3:
+                self.update()
+                self.handle_settlement(self.current_player)
+                self.handle_road(self.current_player)
+                self.end_turn()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.end_turn_button_rect.collidepoint(location):
@@ -189,14 +220,12 @@ class Main:
                     else:
                         print("Cannot end turn")
                         return -1
-                for option in self.board.unique_v:
-                    if location[0] in range(option[0] - 10, option[0] + 10):
-                        if location[1] in range(option[1] - 10, option[1] + 10):
-                            self.handle_settlement(self.current_player, location)
-                for option in self.board.centre_edge:
-                    if location[0] in range(option[0][0] - 10, option[0][0] + 10):
-                        if location[1] in range(option[0][1] - 10, option[0][1] + 10):
-                            self.handle_road(self.current_player, option)
+                if self.turn_number < 3:
+                    self.handle_settlement(self.current_player)
+                elif self.settlement_button_rect.collidepoint(location):
+                    self.handle_settlement(self.current_player)
+                elif self.road_button_rect.collidepoint(location):
+                    self.handle_road(self.current_player)
                 if self.dice.dice_rect.collidepoint(location):
                     if self.turn_number > 2:
                         if not self.dice_count > 0:
@@ -209,31 +238,30 @@ class Main:
                     else:
                         print("Cannot roll dice until initial placements have been made.")
 
-
-    def handle_settlement(self, player, location):
+    def handle_settlement(self, player):
         count = self.player_settlement_count(player)
 
         if self.turn_number == 1:
             if count == 0:
-                self.board.place_settlement(player, location, True)
+                self.board.place_settlement(player, True)
             else:
                 print("Cannot place another settlement on this turn")
                 return -1
         elif self.turn_number == 2:
             if count == 1:
-                self.board.place_settlement(player, location, True)
+                self.board.place_settlement(player, True)
             else:
                 print("Cannot place another settlement on this turn")
                 return -1
         else:
-            self.board.place_settlement(player, location, False)
+            self.board.place_settlement(player, False)
 
-    def handle_road(self, player, location):
+    def handle_road(self, player):
         count = self.player_road_count(player)
 
         if self.turn_number == 1:
             if count == 0:
-                self.board.place_road(player, location, True)
+                self.board.place_road(player, True)
             else:
                 print("Cannot place another road on this turn")
                 return -1
@@ -242,12 +270,12 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     location = pygame.mouse.get_pos()
             if count == 1:
-                self.board.place_road(player, location, True)
+                self.board.place_road(player, True)
             else:
                 print("Cannot place another road on this turn")
                 return -1
         else:
-            self.board.place_road(player, location, False)
+            self.board.place_road(player, False)
 
     def can_end_turn(self, player):
         road_count = self.player_road_count(player)
