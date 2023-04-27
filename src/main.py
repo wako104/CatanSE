@@ -1,6 +1,7 @@
 import pygame
 import math
 import pygame_gui
+from pygame import MOUSEBUTTONDOWN
 
 from settings import *
 import sys
@@ -368,7 +369,7 @@ class Main:
         self.board.screen.blit(text, text_pos)
 
     def draw_road_button(self):
-        pos_x = 20 + (66.8*7)
+        pos_x = 20 + (66.8*8)
         pos_y = HEIGHT - 135
         button_width, button_height = 100, 87.8
         self.road_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
@@ -398,12 +399,6 @@ class Main:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
-            while self.turn_number < 3:
-                self.update()
-                self.handle_settlement(self.current_player)
-                self.update()
-                self.handle_road(self.current_player)
-                self.end_turn()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.turn_number > 2:
@@ -418,9 +413,7 @@ class Main:
                     else:
                         print("Cannot end turn")
                         return -1
-                if self.turn_number < 3:
-                    self.handle_settlement(self.current_player)
-                elif self.settlement_button_rect.collidepoint(location):
+                if self.settlement_button_rect.collidepoint(location):
                     self.handle_settlement(self.current_player)
                 elif self.road_button_rect.collidepoint(location):
                     self.handle_road(self.current_player)
@@ -635,40 +628,64 @@ class Main:
 
     def handle_road(self, player):
         count = self.player_road_count(player)
-
         if self.turn_number == 1:
-            if count == 0:
-                if self.player_settlement_count(self.current_player) == 1:
-                    self.board.place_road(player, True)
-                else:
-                    print("Place settlement before road")
-                self.board.place_road(player, True)
-            else:
-                print("Cannot place another road on this turn")
+            if count == 1:
+                print("Cannot place another road this turn")
                 return -1
         elif self.turn_number == 2:
-
-            if count == 1:
-                if self.player_settlement_count(self.current_player) == 2:
-                    player_settlements = self.player_settlements(self.current_player)
-                    required_locations = []
-
-                    for edge in self.board.centre_edge:
-                        if player_settlements[1].location in edge[1]:
-                            required_locations.append(edge[0])
-
-                    current_location = location[0]
-                    if current_location in required_locations:
-                        self.board.place_road(player, True)
-                    else:
-                        print("Location not available")
-                else:
-                    print("Place settlement before road")
-            else:
-                print("Cannot place another road on this turn")
+            if count == 2:
+                print("Cannot place another road this turn")
                 return -1
-        else:
-            self.board.place_road(player, False)
+        print("test")
+        pygame.mouse.set_cursor(pygame.cursors.ball)
+        wait = pygame.event.wait()
+        while wait.type != MOUSEBUTTONDOWN:
+            wait = pygame.event.wait()
+        if wait.type == MOUSEBUTTONDOWN:
+            mouse_loc = pygame.mouse.get_pos()
+            print(mouse_loc)
+            for option in self.board.centre_edge:
+                if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
+                    if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
+                        if self.turn_number == 1:
+                            if count == 0:
+                                if self.player_settlement_count(self.current_player) == 1:
+                                    self.board.place_road(player, option, True)
+                                else:
+                                    print("Place settlement before road")
+                            else:
+                                print("Cannot place another road on this turn")
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                return -1
+                        elif self.turn_number == 2:
+
+                            if count == 1:
+                                if self.player_settlement_count(self.current_player) == 2:
+                                    player_settlements = self.player_settlements(self.current_player)
+                                    required_locations = []
+
+                                    for edge in self.board.centre_edge:
+                                        if player_settlements[1].location in edge[1]:
+                                            required_locations.append(edge[0])
+
+                                    current_location = option[0]
+                                    if current_location in required_locations:
+                                        self.board.place_road(player, option, True)
+                                    else:
+                                        print("test")
+                                        print("Must place next to your most recent settlement")
+                                        pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                        return -1
+                                else:
+                                    print("Place settlement before road")
+                                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                    return -1
+                            else:
+                                print("Cannot place another road on this turn")
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                return -1
+                        else:
+                            self.board.place_road(player,option, False)
 
     def can_end_turn(self, player):
         road_count = self.player_road_count(player)

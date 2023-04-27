@@ -290,7 +290,7 @@ class Board:
         pass
 
     # Method to place a road on the board
-    def place_road(self, player, initial_placement):
+    def place_road(self, player, option, initial_placement):
         error = 0
         owned = 0
         adjacent_settlement = []
@@ -298,81 +298,73 @@ class Board:
         chosen_location = False
 
         while not chosen_location:
-            wait = pygame.event.wait()
-            pygame.mouse.set_cursor(pygame.cursors.ball)
-            if wait.type == MOUSEBUTTONDOWN:
-                mouse_loc = pygame.mouse.get_pos()
-                for option in self.centre_edge:
-                    if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
-                        if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
+            if not initial_placement:
+                for required in ROAD:
+                    if required not in player.resources.keys() or player.resources[required] < 1:
+                        print("Do not have required resources for a road")
+                        return -1
+                    else:
+                        owned += 1
 
-                            if not initial_placement:
-                                for required in ROAD:
-                                    if required not in player.resources.keys() or player.resources[required] < 1:
-                                        print("Do not have required resources for a road")
-                                        return -1
-                                    else:
-                                        owned += 1
+            for edge in self.edge_vertices:
+                for road in self.existing_roads:
+                    for vertex in road.location[1]:
+                        if vertex in edge[1]:
+                            adjacent_road.append(road)
 
-                            for edge in self.edge_vertices:
-                                for road in self.existing_roads:
-                                    for vertex in road.location[1]:
-                                        if vertex in edge[1]:
-                                            adjacent_road.append(road)
+            for vertex in option[1]:
+                for settlement in self.existing_settlements:
+                    if settlement.location == vertex:
+                        adjacent_settlement.append(settlement)
 
-                            for vertex in option[1]:
-                                for settlement in self.existing_settlements:
-                                    if settlement.location == vertex:
-                                        adjacent_settlement.append(settlement)
+            for road in adjacent_road:
+                if road.player == player:
+                    error = 0
+                    break
+                else:
+                    error = 4
 
-                            for road in adjacent_road:
-                                if road.player == player:
-                                    error = 0
-                                    break
-                                else:
-                                    error = 4
+            for road in self.existing_roads:
+                if road.location[0] == option[0]:
+                    error = 1
 
-                            for road in self.existing_roads:
-                                if road.location[0] == option[0]:
-                                    error = 1
+            for settlement in adjacent_settlement:
+                if settlement.player != player:
+                    error = 2
 
-                            for settlement in adjacent_settlement:
-                                if settlement.player != player:
-                                    error = 2
+            if len(adjacent_settlement) == 0 & len(adjacent_road) == 0:
+                error = 3
 
-                            if len(adjacent_settlement) == 0 & len(adjacent_road) == 0:
-                                error = 3
-
-                            if error == 1:
-                                print("Location not available")
-                                self.place_road(player, initial_placement)
-                                return -1
-                            elif error == 2:
-                                print("Cannot place a road next to enemy settlement.")
-                                self.place_road(player, initial_placement)
-                                return -1
-                            elif error == 3:
-                                print("Must be next to your settlement or road.")
-                                self.place_road(player, initial_placement)
-                                return -1
-                            elif error == 4:
-                                print("Must be next to your own road.")
-                                self.place_road(player, initial_placement)
-                                return -1
-                            elif error == 0:
-                                new_road = Road(player, option)
-                                self.existing_roads.append(new_road)
-                                pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
-                                pygame.mouse.set_cursor(pygame.cursors.arrow)
-                                if not initial_placement:
-                                    if owned == len(ROAD):
-                                        for required in ROAD:
-                                            player.resources[required] -= 1
-                                if not initial_placement:
-                                    print("Road created for player " + str(player.num))
-                                else:
-                                    print("Initial road created for player " + str(player.num))
-                                chosen_location = True
+            if error == 1:
+                print("Location not available")
+                self.place_road(player, initial_placement)
+                return -1
+            elif error == 2:
+                print("Cannot place a road next to enemy settlement.")
+                self.place_road(player, initial_placement)
+                return -1
+            elif error == 3:
+                print("Must be next to your settlement or road.")
+                self.place_road(player, initial_placement)
+                return -1
+            elif error == 4:
+                print("Must be next to your own road.")
+                self.place_road(player, initial_placement)
+                return -1
+            elif error == 0:
+                new_road = Road(player, option)
+                self.existing_roads.append(new_road)
+                pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
+                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                if not initial_placement:
+                    if owned == len(ROAD):
+                        for required in ROAD:
+                            player.resources[required] -= 1
+                if not initial_placement:
+                    print("Road created for player " + str(player.num))
+                else:
+                    print("Initial road created for player " + str(player.num))
+                chosen_location = True
 
     def harvest_resource(self, dice_number):
         for location in self.location_number_resource:
