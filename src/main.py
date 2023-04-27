@@ -399,6 +399,13 @@ class Main:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            if self.turn_number < 3:
+                self.update()
+                self.handle_settlement(self.current_player)
+                self.update()
+                self.handle_road(self.current_player)
+                self.update()
+                self.end_turn()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 location = pygame.mouse.get_pos()
                 if self.turn_number > 2:
@@ -626,6 +633,8 @@ class Main:
         else:
             self.board.place_settlement(player, False)
 
+        pygame.mouse.set_cursor(pygame.cursors.arrow)
+
     def handle_road(self, player):
         count = self.player_road_count(player)
         if self.turn_number == 1:
@@ -686,6 +695,7 @@ class Main:
                                 return -1
                         else:
                             self.board.place_road(player,option, False)
+        pygame.mouse.set_cursor(pygame.cursors.arrow)
 
     def can_end_turn(self, player):
         road_count = self.player_road_count(player)
