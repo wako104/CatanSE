@@ -13,6 +13,45 @@ from building import Settlement
 class Main:
 
     def __init__(self):
+        self.yes_button_rect = pygame.Rect(WIDTH - 250 + 30 - 20, 450, 50, 25)
+        self.no_button_rect = pygame.Rect(WIDTH - 250 + 30 + 40, 450, 50, 25)
+        self.player4_rect = None
+        self.player3_rect = None
+        self.player2_rect = None
+        self.player1_rect = None
+        self.send_trade_rect = None
+        self.reset_rect = None
+        self.clay_t = 0
+        self.ore_t = 0
+        self.sheep_t = 0
+        self.wheat_t = 0
+        self.wood_t = 0
+        self.clay_r = 0
+        self.ore_r = 0
+        self.sheep_r = 0
+        self.wheat_r = 0
+        self.wood_r = 0
+        self.counter_box_t = None
+        self.counter_box_l = None
+        self.counter_box_w = None
+        self.counter_box_o = None
+        self.counter_box_c = None
+        self.resource_box_l = None
+        self.resource_box_w = None
+        self.resource_box_s = None
+        self.resource_box_o = None
+        self.resource_box_c = None
+        self.counter_box_s2 = None
+        self.counter_box_l2 = None
+        self.counter_box_w2 = None
+        self.counter_box_o2 = None
+        self.counter_box_c2 = None
+        self.resource_box_l2 = None
+        self.resource_box_w2 = None
+        self.resource_box_s2 = None
+        self.resource_box_o2 = None
+        self.resource_box_c2 = None
+        self.resource_positions = None
         pygame.init()
         self.board = Board(WIDTH, HEIGHT)
         self.clock = pygame.time.Clock()
@@ -22,7 +61,19 @@ class Main:
         self.turn_number = 1
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
+        self.font2 = pygame.font.Font(pygame.font.get_default_font(), 18)
         self.dice_count = 0
+        self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.red_counter = 0
+        self.blue_counter = 0
+        self.green_counter = 0
+        self.orange_counter = 0
+        self.colour1 = (241,140,140)
+        self.colour2 = (170,235,255)
+        self.colour3 = (173,228,206)
+        self.colour4 = (255, 235, 150)
+        self.trade_with = None
         self.placed_init_settlement = False
         self.placed_init_road = False
 
@@ -48,6 +99,7 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
             self.board.screen.blit(turn_number_text, (10, 10))
             self.draw_resources()
+            self.draw_trade_button()
             current_player_text = self.font.render("Player : " + str(self.current_player.num), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
@@ -122,6 +174,144 @@ class Main:
         pygame.display.set_caption(TITLE)
         icon = pygame.image.load('../resources/logo.png')
         pygame.display.set_icon(icon)
+
+    def draw_trade_button(self):
+        # Define the colors for the button and text
+        button_colour = (200, 200, 200)
+        text_colour = (0, 0, 0)
+        resource_colour = (0, 200, 0)
+
+        xpos = WIDTH - 250
+        xpos2 = xpos + 30
+        ypos = 120
+        ypos2 = 145
+
+        ypos3 = ypos + 90
+        ypos4 = ypos2 + 90
+
+        # Define the positions and sizes of the button and text
+        button_rect = pygame.Rect(xpos, 60, 200, 315)
+        text_rect = pygame.Rect(xpos2 - 20, 95, 20, 20)
+
+        # Draw the button and text
+        pygame.draw.rect(self.board.screen, button_colour, button_rect)
+        self.board.screen.blit(self.font.render("Send", True, text_colour), text_rect)
+        self.board.screen.blit(self.font.render("Receive", True, text_colour), (xpos2 - 20, 185))
+
+        # Define the positions and sizes of the resource counters
+        self.resource_positions = {
+            "C": (xpos2, ypos),
+            "O": (xpos2 + 30, ypos),
+            "S": (xpos2 + (30 * 2), ypos),
+            "W": (xpos2 + (30 * 3), ypos),
+            "P": (xpos2 + (30 * 4), ypos)
+        }
+
+        self.resource_box_c = pygame.Rect(xpos2, ypos, 20, 20)
+        self.resource_box_o = pygame.Rect(xpos2 + 30, ypos, 20, 20)
+        self.resource_box_s = pygame.Rect(xpos2 + (30*2), ypos, 20, 20)
+        self.resource_box_w = pygame.Rect(xpos2 + (30*3), ypos, 20, 20)
+        self.resource_box_l = pygame.Rect(xpos2 + (30*4), ypos, 20, 20)
+
+        self.counter_box_c = pygame.Rect(xpos2, ypos2, 20, 20)
+        self.counter_box_o = pygame.Rect(xpos2 + 30, ypos2, 20, 20)
+        self.counter_box_s = pygame.Rect(xpos2 + (30*2), ypos2, 20, 20)
+        self.counter_box_w = pygame.Rect(xpos2 + (30*3), ypos2, 20, 20)
+        self.counter_box_l = pygame.Rect(xpos2 + (30*4), ypos2, 20, 20)
+
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_c)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_o)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_s)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_w)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_l)
+
+        self.board.screen.blit(self.font.render(str(self.clay_t), 1, text_colour), self.counter_box_c)
+        self.board.screen.blit(self.font.render(str(self.ore_t), 1, text_colour), self.counter_box_o)
+        self.board.screen.blit(self.font.render(str(self.sheep_t), 1, text_colour), self.counter_box_s)
+        self.board.screen.blit(self.font.render(str(self.wheat_t), 1, text_colour), self.counter_box_w)
+        self.board.screen.blit(self.font.render(str(self.wood_t), 1, text_colour), self.counter_box_l)
+
+        self.board.screen.blit(self.font.render("C", 1, text_colour), self.resource_box_c)
+        self.board.screen.blit(self.font.render("O", 1, text_colour), self.resource_box_o)
+        self.board.screen.blit(self.font.render("S", 1, text_colour), self.resource_box_s)
+        self.board.screen.blit(self.font.render("W", 1, text_colour), self.resource_box_w)
+        self.board.screen.blit(self.font.render("L", 1, text_colour), self.resource_box_l)
+
+        self.resource_box_c2 = pygame.Rect(xpos2, ypos3, 20, 20)
+        self.resource_box_o2 = pygame.Rect(xpos2 + 30, ypos3, 20, 20)
+        self.resource_box_s2 = pygame.Rect(xpos2 + (30 * 2), ypos3, 20, 20)
+        self.resource_box_w2 = pygame.Rect(xpos2 + (30 * 3), ypos3, 20, 20)
+        self.resource_box_l2 = pygame.Rect(xpos2 + (30 * 4), ypos3, 20, 20)
+
+        self.counter_box_c2 = pygame.Rect(xpos2, ypos4, 20, 20)
+        self.counter_box_o2 = pygame.Rect(xpos2 + 30, ypos4, 20, 20)
+        self.counter_box_s2 = pygame.Rect(xpos2 + (30 * 2), ypos4, 20, 20)
+        self.counter_box_w2 = pygame.Rect(xpos2 + (30 * 3), ypos4, 20, 20)
+        self.counter_box_l2 = pygame.Rect(xpos2 + (30 * 4), ypos4, 20, 20)
+
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_c2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_o2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_s2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_w2)
+        pygame.draw.rect(self.board.screen, resource_colour, self.resource_box_l2)
+
+        self.board.screen.blit(self.font.render(str(self.clay_r), 1, text_colour), self.counter_box_c2)
+        self.board.screen.blit(self.font.render(str(self.ore_r), 1, text_colour), self.counter_box_o2)
+        self.board.screen.blit(self.font.render(str(self.sheep_r), 1, text_colour), self.counter_box_s2)
+        self.board.screen.blit(self.font.render(str(self.wheat_r), 1, text_colour), self.counter_box_w2)
+        self.board.screen.blit(self.font.render(str(self.wood_r), 1, text_colour), self.counter_box_l2)
+
+        self.board.screen.blit(self.font.render("C", 1, text_colour), self.resource_box_c2)
+        self.board.screen.blit(self.font.render("O", 1, text_colour), self.resource_box_o2)
+        self.board.screen.blit(self.font.render("S", 1, text_colour), self.resource_box_s2)
+        self.board.screen.blit(self.font.render("W", 1, text_colour), self.resource_box_w2)
+        self.board.screen.blit(self.font.render("L", 1, text_colour), self.resource_box_l2)
+
+        trade_with_rect = pygame.Rect(xpos2 - 20, ypos3 + 55, 140, 25)
+        self.board.screen.blit(self.font.render("Trade with:", True, text_colour), trade_with_rect)
+
+        self.reset_rect = pygame.Rect(xpos2 + 90, 70, 70, 25)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.reset_rect)
+        self.board.screen.blit(self.font.render("Reset", True, text_colour), self.reset_rect)
+
+        self.send_trade_rect = pygame.Rect(xpos2 - 20, ypos3 + 130, 140, 25)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.send_trade_rect)
+        self.board.screen.blit(self.font.render("Offer Trade", True, text_colour), self.send_trade_rect)
+
+        # Define the positions and sizes of the player text and rectangles
+        player_rect_width = 30
+        player_rect_height = 30
+        y_pos_player = 272 + 25
+        self.player1_rect = pygame.Rect(xpos2-20, y_pos_player, player_rect_width, player_rect_height)
+        self.player2_rect = pygame.Rect(xpos2-20 + player_rect_width + 10, y_pos_player, player_rect_width, player_rect_height)
+        self.player3_rect = pygame.Rect(xpos2-20 + (player_rect_width + 10) * 2, y_pos_player, player_rect_width, player_rect_height)
+        self.player4_rect = pygame.Rect(xpos2-20 + (player_rect_width + 10) * 3, y_pos_player, player_rect_width, player_rect_height)
+
+        # Determine how many players to display
+        if self.num_players == 4:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, self.player3_rect)
+            pygame.draw.rect(self.board.screen, self.colour4, self.player4_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
+            self.board.screen.blit(self.font.render("P4", True, BLACK), self.player4_rect)
+        elif self.num_players == 3:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, self.player3_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
+        elif self.num_players == 2:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, self.player2_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+        else:
+            pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
 
     def draw_resources(self):
         pygame.draw.rect(self.board.screen, WHITE, (0, HEIGHT - 150, WIDTH, 150))
@@ -244,6 +434,170 @@ class Main:
                     else:
                         print("Cannot roll dice until initial placements have been made.")
 
+                if self.reset_rect.collidepoint(location):
+                    self.clay_t = 0
+                    self.ore_t = 0
+                    self.sheep_t = 0
+                    self.wheat_t = 0
+                    self.wood_t = 0
+                    self.clay_r = 0
+                    self.ore_r = 0
+                    self.sheep_r = 0
+                    self.wheat_r = 0
+                    self.wood_r = 0
+                    self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                    self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+
+                if self.resource_box_c.collidepoint(location):
+                    self.clay_t += 1
+                if self.resource_box_o.collidepoint(location):
+                    self.ore_t += 1
+                if self.resource_box_s.collidepoint(location):
+                    self.sheep_t += 1
+                if self.resource_box_w.collidepoint(location):
+                    self.wheat_t += 1
+                if self.resource_box_l.collidepoint(location):
+                    self.wood_t += 1
+                if self.resource_box_c2.collidepoint(location):
+                    self.clay_r += 1
+                if self.resource_box_o2.collidepoint(location):
+                    self.ore_r += 1
+                if self.resource_box_s2.collidepoint(location):
+                    self.sheep_r += 1
+                if self.resource_box_w2.collidepoint(location):
+                    self.wheat_r += 1
+                if self.resource_box_l2.collidepoint(location):
+                    self.wood_r += 1
+
+                if self.send_trade_rect.collidepoint(location):
+                    print("Trade request")
+                    req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
+                    give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
+                    self.request_trade(req, give)
+                    print(req)
+                    print(give)
+                    self.colour1 = (241, 140, 140)
+                    self.colour2 = (170, 235, 255)
+                    self.colour3 = (173, 228, 206)
+                    self.colour4 = (255, 235, 150)
+                    self.draw_accept_trade_offer()
+
+                if self.player1_rect.collidepoint(location):
+                    if self.red_counter == 1:
+                        self.colour1 = (241,140,140)
+                        self.red_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = PLAYERCOLOUR1
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = (255, 235, 150)
+                        self.red_counter = 1
+                        self.trade_with = self.players[0]
+
+                if self.player2_rect.collidepoint(location):
+                    if self.blue_counter == 1:
+                        self.colour2 = (170,235,255)
+                        self.blue_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = PLAYERCOLOUR2
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = (255, 235, 150)
+                        self.blue_counter = 1
+                        self.trade_with = self.players[1]
+
+                if self.player3_rect.collidepoint(location):
+                    if self.green_counter == 1:
+                        self.colour3 = (173,228,206)
+                        self.green_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = PLAYERCOLOUR3
+                        self.colour4 = (255, 235, 150)
+                        self.green_counter = 1
+                        self.trade_with = self.players[2]
+
+                if self.player4_rect.collidepoint(location):
+                    if self.orange_counter == 1:
+                        self.colour4 = (255, 235, 150)
+                        self.orange_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = PLAYERCOLOUR4
+                        self.orange_counter = 1
+                        self.trade_with = self.players[3]
+
+                if self.no_button_rect.collidepoint(location):
+                    accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
+                    pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
+                    self.trade_with = None
+
+                if self.yes_button_rect.collidepoint(location):
+                    self.accept_trade(self.current_player, self.trade_with)
+                    print("trade complete")
+                    accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
+                    pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
+                    self.trade_with = None
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                print("trade")
+                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD: 0}
+                give = {CLAY: 1, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                self.request_trade(req, give)
+                self.accept_trade(self.current_player, self.players[1])
+
+    def draw_accept_trade_offer(self):
+        player_rect_width = 30
+        player_rect_height = 30
+        y_pos_player = 272 + 25
+
+        xpos = WIDTH - 250
+        xpos2 = xpos + 30
+        ypos = 120
+        ypos2 = 145
+
+        ypos3 = ypos + 90
+        ypos4 = ypos2 + 90
+
+        player_rects = [
+            pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+            for _ in range(len(self.players))
+        ]
+
+        print(self.players[0])
+        print(self.trade_with)
+
+        xpos = WIDTH - 250
+
+        button_colour = (200, 200, 200)
+        text_colour = (0, 0, 0)
+
+        accept_text_rect = pygame.Rect(xpos + 48, 415, 200, 50)
+        accept_box_rect = pygame.Rect(xpos, 400, 200, 85)
+        self.yes_button_rect = pygame.Rect(xpos2 - 20, 450, 50, 25)
+        self.no_button_rect = pygame.Rect(xpos2 + 40, 450, 50, 25)
+
+        pygame.draw.rect(self.board.screen, button_colour, accept_box_rect)
+        self.board.screen.blit(self.font2.render("Do you accept?", True, text_colour), accept_text_rect)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.yes_button_rect)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.no_button_rect)
+        self.board.screen.blit(self.font2.render("Yes", True, text_colour), self.yes_button_rect)
+        self.board.screen.blit(self.font2.render("No", True, text_colour), self.no_button_rect)
+
+        player_colours = [PLAYERCOLOUR1, PLAYERCOLOUR2, PLAYERCOLOUR3, PLAYERCOLOUR4]
+
+        for i, player in enumerate(self.players):
+            if self.trade_with == player:
+                pygame.draw.rect(self.board.screen, player_colours[i], player_rects[i])
+                self.board.screen.blit(self.font.render(f"P{i + 1}", True, BLACK), player_rects[i])
+
     def handle_settlement(self, player):
         count = self.player_settlement_count(player)
 
@@ -267,16 +621,32 @@ class Main:
 
         if self.turn_number == 1:
             if count == 0:
+                if self.player_settlement_count(self.current_player) == 1:
+                    self.board.place_road(player, True)
+                else:
+                    print("Place settlement before road")
                 self.board.place_road(player, True)
             else:
                 print("Cannot place another road on this turn")
                 return -1
         elif self.turn_number == 2:
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    location = pygame.mouse.get_pos()
+
             if count == 1:
-                self.board.place_road(player, True)
+                if self.player_settlement_count(self.current_player) == 2:
+                    player_settlements = self.player_settlements(self.current_player)
+                    required_locations = []
+
+                    for edge in self.board.centre_edge:
+                        if player_settlements[1].location in edge[1]:
+                            required_locations.append(edge[0])
+
+                    current_location = location[0]
+                    if current_location in required_locations:
+                        self.board.place_road(player, True)
+                    else:
+                        print("Location not available")
+                else:
+                    print("Place settlement before road")
             else:
                 print("Cannot place another road on this turn")
                 return -1
@@ -315,6 +685,27 @@ class Main:
             if settlement.player == player:
                 count += 1
         return count
+
+    def player_settlements(self, player):
+        player_settlements = []
+        for settlement in self.board.existing_settlements:
+            if settlement.player == self.current_player:
+                player_settlements.append(settlement)
+        return player_settlements
+
+    def request_trade(self, receive, give):
+        for resource, amount in receive.items():
+            self.receive_resources[resource] += amount
+        for resource, amount in give.items():
+            self.give_resources[resource] += amount
+
+    def accept_trade(self, player1, player2):
+        player1.send_trade(self.give_resources)
+        player1.receive_trade(self.receive_resources)
+        player2.send_trade(self.receive_resources)
+        player2.receive_trade(self.give_resources)
+        self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
 
     # quits game
     def quit(self):
