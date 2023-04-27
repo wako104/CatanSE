@@ -388,6 +388,20 @@ class Main:
                 print("Player " + str(player.num) + " has " + str(player.resources))
             self.turn_number += 1
         self.current_player = self.players[(current_player_index + 1) % player_count]
+        self.colour1 = (241, 140, 140)
+        self.colour2 = (170, 235, 255)
+        self.colour3 = (173, 228, 206)
+        self.colour4 = (255, 235, 150)
+        self.clay_t = 0
+        self.ore_t = 0
+        self.sheep_t = 0
+        self.wheat_t = 0
+        self.wood_t = 0
+        self.clay_r = 0
+        self.ore_r = 0
+        self.sheep_r = 0
+        self.wheat_r = 0
+        self.wood_r = 0
         print("Player " + str(self.current_player.num))
 
     # checks for game updates
@@ -449,8 +463,13 @@ class Main:
                     self.wood_r = 0
                     self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
                     self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                    self.colour1 = (241, 140, 140)
+                    self.colour2 = (170, 235, 255)
+                    self.colour3 = (173, 228, 206)
+                    self.colour4 = (255, 235, 150)
                     self.trade_with = None
 
+# e21321
                 if self.resource_box_c.collidepoint(location):
                     self.clay_t += 1
                 if self.resource_box_o.collidepoint(location):
