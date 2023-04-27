@@ -1,5 +1,6 @@
 import math
 import pygame
+from pygame import MOUSEBUTTONDOWN
 import random
 
 import building
@@ -43,6 +44,8 @@ class Board:
         self.hex_resource = defaultdict(list)
         self.vertex_adjacent_centres = {}
         self.location_number_resource = {}
+        self.vertex_edges = {}
+        self.initial_settlements = []
 
     # draws the board
     def draw(self):
@@ -159,13 +162,8 @@ class Board:
 
             self.location_number_resource[dest] = (self.tokens[i], self.tiles[i])
 
-        print(self.location_number_resource)
-        print("number location ^")
-
         for token, tile in zip(self.tokens, self.tiles):
             self.hex_resource[token].append(tile)
-        print(self.hex_resource)
-        print("test1")
 
         # creates a list of unique tuples which represent coordinates of each vertex.d
         # i.e. list of the coordinates for possible settlement locations
@@ -203,7 +201,6 @@ class Board:
                         if (vertex, vertex_2) not in self.edge_vertices:
                             if (vertex_2, vertex) not in self.edge_vertices:
                                 self.edge_vertices.append((vertex, vertex_2))
-
         self.get_edge_centres()
         self.get_vertex_adjacent_centres()
 
@@ -229,135 +226,153 @@ class Board:
         print(self.vertex_adjacent_centres)
 
     # method called when clicking on a location you want to place a settlement
-    def place_settlement(self, player, location, initial_placement):
-        owned = 0
+    def place_settlement(self, player, initial_placement):
+        chosen_location = False
+        while not chosen_location:
+            wait = pygame.event.wait()
+            pygame.mouse.set_cursor(pygame.cursors.ball)
+            if wait.type == MOUSEBUTTONDOWN:
+                mouse_loc = pygame.mouse.get_pos()
+                for option in self.unique_v:
+                    if mouse_loc[0] in range(option[0] - 10, option[0] + 10):
+                        if mouse_loc[1] in range(option[1] - 10, option[1] + 10):
+                            if not initial_placement:
+                                owned = 0
+                                for required in SETTLEMENT:
+                                    if required not in player.resources.keys() or player.resources[required] < 1:
+                                        print("Do not have required resources for a settlement")
+                                        pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                        return -1
+                                    else:
+                                        owned += 1
 
-        # check if the placement is not an initial placement
-        if not initial_placement:
-            # if it is not an initial placement, check the player has the correct cards
-            #if not player.check_cards(SETTLEMENT):
-                #print("Player does not have required cards")
-                #return -1
-            #else:
-                # if player has correct cards, remove them from their deck
-                #player.remove_cards(SETTLEMENT)
-            owned = 0
-            for required in SETTLEMENT:
-                if required not in player.resources.keys() or player.resources[required] < 1:
-                    print("Do not have required resources for a settlement")
-                    return -1
-                else:
-                    owned += 1
-
-
-        # Checks whether the location given is close to one of the unique vertices on the board.
-        error = 0
-        adjacent_vertices = []
-        for option in self.unique_v:
-            if location[0] in range(option[0] - 10, option[0] + 10):
-                if location[1] in range(option[1] - 10, option[1] + 10):
-                    # Check if the vertex is already taken, if not, draw a circle and update the dictionary
-                    for settlement in self.existing_settlements:
-                        if settlement.location == option:
-                            error = 1
-                        elif option in settlement.adjacent_vertices:
-                            error = 2
-                    for edge in self.edge_vertices:
-                        if option in edge:
-                            for vertex in edge:
-                                if vertex != option:
-                                    adjacent_vertices.append(vertex)
-                    if error == 1:
-                        print("Location not available")
-                    elif error == 2:
-                        print("Cannot place adjacent to another settlement.")
-                    else:
-                        new_settlement\
-                            = Settlement(player, option, adjacent_vertices, self.vertex_adjacent_centres[option], self)
-                        self.existing_settlements.append(new_settlement)
-                        pygame.draw.circle(self.screen, player.colour, option, 10)
-                        if owned == len(SETTLEMENT):
-                            for required in SETTLEMENT:
-                                player.resources[required] -= 1
-                        player.add_victory_point()
-                        print("settlement created for player " + str(player.num))
-                        print("Player " + str(player.num) + " has " + str(player.get_victory_points()) + " victory points")
+                            # Checks whether the location given is close to one of the unique vertices on the board.
+                            error = 0
+                            adjacent_vertices = []
+                            # Check if the vertex is already taken, if not, draw a circle and update the dictionary
+                            for settlement in self.existing_settlements:
+                                if settlement.location == option:
+                                    error = 1
+                                elif option in settlement.adjacent_vertices:
+                                    error = 2
+                            for edge in self.edge_vertices:
+                                if option in edge:
+                                    for vertex in edge:
+                                        if vertex != option:
+                                            adjacent_vertices.append(vertex)
+                            if error == 1:
+                                print("Location not available")
+                                self.place_settlement(player, initial_placement)
+                                return -1
+                            elif error == 2:
+                                print("Cannot place adjacent to another settlement.")
+                                self.place_settlement(player, initial_placement)
+                                return -1
+                            else:
+                                new_settlement\
+                                    = Settlement(player, option, adjacent_vertices, self.vertex_adjacent_centres[option], self)
+                                self.existing_settlements.append(new_settlement)
+                                pygame.draw.circle(self.screen, player.colour, option, 10)
+                                chosen_location = True
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                if not initial_placement:
+                                    if owned == len(SETTLEMENT):
+                                        for required in SETTLEMENT:
+                                            player.resources[required] -= 1
+                                player.add_victory_point()
+                                if not initial_placement:
+                                    print("Settlement created for player " + str(player.num))
+                                else:
+                                    print("Initial settlement created for player " + str(player.num))
+                                print("Player " + str(player.num) + " has " + str(player.get_victory_points()) + " victory points")
 
     def initial_resource_collection(self, player, settlement):
         pass
 
     # Method to place a road on the board
-    def place_road(self, player, option, initial_placement):
+    def place_road(self, player, initial_placement):
         error = 0
         owned = 0
         adjacent_settlement = []
         adjacent_road = []
+        chosen_location = False
 
-        # check if the placement is not an initial placement
-        if not initial_placement:
-            # if it is not an initial placement, check the player has the correct cards
-            #if not player.check_cards(ROAD):
-                #print("Player does not have required cards")
-                #return -1
-            #else:
-                # if player has correct cards, remove them from their deck
-                #player.remove_cards(ROAD)
+        while not chosen_location:
+            wait = pygame.event.wait()
+            pygame.mouse.set_cursor(pygame.cursors.ball)
+            if wait.type == MOUSEBUTTONDOWN:
+                mouse_loc = pygame.mouse.get_pos()
+                for option in self.centre_edge:
+                    if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
+                        if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
 
-            owned = 0
-            for required in ROAD:
-                if required not in player.resources.keys() or player.resources[required] < 1:
-                    print("Do not have required resources for a road")
-                    return -1
-                else:
-                    owned += 1
+                            if not initial_placement:
+                                for required in ROAD:
+                                    if required not in player.resources.keys() or player.resources[required] < 1:
+                                        print("Do not have required resources for a road")
+                                        return -1
+                                    else:
+                                        owned += 1
 
-        for vertex in option[1]:
-            for settlement in self.existing_settlements:
-                if settlement.location == vertex:
-                    adjacent_settlement.append(settlement)
+                            for edge in self.edge_vertices:
+                                for road in self.existing_roads:
+                                    for vertex in road.location[1]:
+                                        if vertex in edge[1]:
+                                            adjacent_road.append(road)
 
-        for road in self.existing_roads:
-            for vertex in road.location[1]:
-                if vertex in option[1]:
-                    adjacent_road.append(road)
+                            for vertex in option[1]:
+                                for settlement in self.existing_settlements:
+                                    if settlement.location == vertex:
+                                        adjacent_settlement.append(settlement)
 
-        for road in adjacent_road:
-            if road.player == player:
-                error = 0
-                break
-            else:
-                error = 4
+                            for road in adjacent_road:
+                                if road.player == player:
+                                    error = 0
+                                    break
+                                else:
+                                    error = 4
 
-        # Check if the vertex is already taken, if not, draw a circle and update the dictionary
-        for road in self.existing_roads:
-            if road.location[0] == option[0]:
-                print("test1")
-                error = 1
+                            for road in self.existing_roads:
+                                if road.location[0] == option[0]:
+                                    error = 1
 
-        for settlement in adjacent_settlement:
-            if settlement.player != player:
-                error = 2
+                            for settlement in adjacent_settlement:
+                                if settlement.player != player:
+                                    error = 2
 
-        if len(adjacent_settlement) == 0:
-            if len(adjacent_road) == 0:
-                error = 3
+                            if len(adjacent_settlement) == 0 & len(adjacent_road) == 0:
+                                error = 3
 
-        if error == 1:
-            print("Location not available")
-        elif error == 2:
-            print("Cannot place a road next to enemy settlement.")
-        elif error == 3:
-            print("Must be next to your settlement or road.")
-        elif error == 4:
-            print("Must be next to your own road.")
-        elif error == 0:
-            new_road = Road(player, option)
-            self.existing_roads.append(new_road)
-            pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
-            if owned == len(ROAD):
-                for required in ROAD:
-                    player.resources[required] -= 1
-            print("Road created for player " + str(player.num))
+                            if error == 1:
+                                print("Location not available")
+                                self.place_road(player, initial_placement)
+                                return -1
+                            elif error == 2:
+                                print("Cannot place a road next to enemy settlement.")
+                                self.place_road(player, initial_placement)
+                                return -1
+                            elif error == 3:
+                                print("Must be next to your settlement or road.")
+                                self.place_road(player, initial_placement)
+                                return -1
+                            elif error == 4:
+                                print("Must be next to your own road.")
+                                self.place_road(player, initial_placement)
+                                return -1
+                            elif error == 0:
+                                new_road = Road(player, option)
+                                self.existing_roads.append(new_road)
+                                pygame.draw.line(self.screen, player.colour, option[1][0], option[1][1], 5)
+                                pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                if not initial_placement:
+                                    if owned == len(ROAD):
+                                        for required in ROAD:
+                                            player.resources[required] -= 1
+                                if not initial_placement:
+                                    print("Road created for player " + str(player.num))
+                                else:
+                                    print("Initial road created for player " + str(player.num))
+                                chosen_location = True
 
     def harvest_resource(self, dice_number):
         for location in self.location_number_resource:
