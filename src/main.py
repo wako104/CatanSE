@@ -31,7 +31,7 @@ class Main:
         self.sheep_r = 0
         self.wheat_r = 0
         self.wood_r = 0
-        self.counter_box_t = None
+        self.counter_box_s = None
         self.counter_box_l = None
         self.counter_box_w = None
         self.counter_box_o = None
