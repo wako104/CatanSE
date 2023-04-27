@@ -447,14 +447,21 @@ class Main:
                         req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
                         give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
 
-                        self.request_trade(req, give)
-                        print(req)
-                        print(give)
-                        self.colour1 = (241, 140, 140)
-                        self.colour2 = (170, 235, 255)
-                        self.colour3 = (173, 228, 206)
-                        self.colour4 = (255, 235, 150)
-                        self.draw_accept_trade_offer()
+                        req_zero = all(val == 0 for val in req.values())
+                        give_zero = all(val == 0 for val in give.values())
+
+                        if req_zero and give_zero:
+                            pass
+
+                        else:
+                            self.request_trade(req, give)
+                            print(req)
+                            print(give)
+                            self.colour1 = (241, 140, 140)
+                            self.colour2 = (170, 235, 255)
+                            self.colour3 = (173, 228, 206)
+                            self.colour4 = (255, 235, 150)
+                            self.draw_accept_trade_offer()
                     else:
                         pass
 
@@ -514,6 +521,16 @@ class Main:
                     accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
                     pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
                     self.trade_with = None
+                    self.clay_t = 0
+                    self.ore_t = 0
+                    self.sheep_t = 0
+                    self.wheat_t = 0
+                    self.wood_t = 0
+                    self.clay_r = 0
+                    self.ore_r = 0
+                    self.sheep_r = 0
+                    self.wheat_r = 0
+                    self.wood_r = 0
 
                 if self.yes_button_rect.collidepoint(location):
                     self.accept_trade(self.current_player, self.trade_with)
@@ -521,13 +538,6 @@ class Main:
                     accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
                     pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
                     self.trade_with = None
-
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                print("trade")
-                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD: 0}
-                give = {CLAY: 1, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
-                self.request_trade(req, give)
-                self.accept_trade(self.current_player, self.players[1])
 
     def draw_accept_trade_offer(self):
         player_rect_width = 30
