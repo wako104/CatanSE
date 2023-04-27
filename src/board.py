@@ -9,6 +9,7 @@ from building import Settlement
 from building import City
 import itertools
 from collections import defaultdict
+from pygame import MOUSEBUTTONDOWN
 
 
 class Board:
