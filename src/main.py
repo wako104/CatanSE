@@ -13,6 +13,8 @@ from building import Settlement
 class Main:
 
     def __init__(self):
+        self.yes_button_rect = pygame.Rect(WIDTH - 250 + 30 - 20, 450, 50, 25)
+        self.no_button_rect = pygame.Rect(WIDTH - 250 + 30 + 40, 450, 50, 25)
         self.player4_rect = None
         self.player3_rect = None
         self.player2_rect = None
@@ -59,10 +61,14 @@ class Main:
         self.turn_number = 1
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
+        self.font2 = pygame.font.Font(pygame.font.get_default_font(), 18)
         self.dice_count = 0
         self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
         self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
         self.red_counter = 0
+        self.blue_counter = 0
+        self.green_counter = 0
+        self.orange_counter = 0
         self.colour1 = (241,140,140)
         self.colour2 = (170,235,255)
         self.colour3 = (173,228,206)
@@ -435,23 +441,140 @@ class Main:
                     self.request_trade(req, give)
                     print(req)
                     print(give)
+                    self.colour1 = (241, 140, 140)
+                    self.colour2 = (170, 235, 255)
+                    self.colour3 = (173, 228, 206)
+                    self.colour4 = (255, 235, 150)
+                    self.draw_accept_trade_offer()
 
                 if self.player1_rect.collidepoint(location):
                     if self.red_counter == 1:
                         self.colour1 = (241,140,140)
                         self.red_counter = 0
-                        self.trade_with = self.players[0]
+                        self.trade_with = None
                     else:
                         self.colour1 = PLAYERCOLOUR1
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = (255, 235, 150)
                         self.red_counter = 1
+                        self.trade_with = self.players[0]
+
+                if self.player2_rect.collidepoint(location):
+                    if self.blue_counter == 1:
+                        self.colour2 = (170,235,255)
+                        self.blue_counter = 0
                         self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = PLAYERCOLOUR2
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = (255, 235, 150)
+                        self.blue_counter = 1
+                        self.trade_with = self.players[1]
+
+                if self.player3_rect.collidepoint(location):
+                    if self.green_counter == 1:
+                        self.colour3 = (173,228,206)
+                        self.green_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = PLAYERCOLOUR3
+                        self.colour4 = (255, 235, 150)
+                        self.green_counter = 1
+                        self.trade_with = self.players[2]
+
+                if self.player4_rect.collidepoint(location):
+                    if self.orange_counter == 1:
+                        self.colour4 = (255, 235, 150)
+                        self.orange_counter = 0
+                        self.trade_with = None
+                    else:
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = PLAYERCOLOUR4
+                        self.orange_counter = 1
+                        self.trade_with = self.players[3]
+
+                if self.no_button_rect.collidepoint(location):
+                    accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
+                    pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
+                    self.trade_with = None
+
+                if self.yes_button_rect.collidepoint(location):
+                    self.accept_trade(self.current_player, self.trade_with)
+                    print("trade complete")
+                    accept_box_rect = pygame.Rect(WIDTH - 250, 400, 200, 85)
+                    pygame.draw.rect(self.board.screen, BG_COLOUR, accept_box_rect)
+                    self.trade_with = None
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 print("trade")
-                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD:0}
+                req = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 1, WOOD: 0}
                 give = {CLAY: 1, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
                 self.request_trade(req, give)
                 self.accept_trade(self.current_player, self.players[1])
+
+    def draw_accept_trade_offer(self):
+
+        player_rect_width = 30
+        player_rect_height = 30
+        y_pos_player = 272 + 25
+
+        xpos = WIDTH - 250
+        xpos2 = xpos + 30
+        ypos = 120
+        ypos2 = 145
+
+        ypos3 = ypos + 90
+        ypos4 = ypos2 + 90
+
+        self.player1_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+        self.player2_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+        self.player3_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+        self.player4_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+
+        print(self.players[0])
+        print(self.trade_with)
+
+
+        xpos = WIDTH - 250
+
+        button_colour = (200, 200, 200)
+        text_colour = (0, 0, 0)
+
+        # define the positions and sizes of the accept box and buttons
+        accept_text_rect = pygame.Rect(xpos + 48, 415, 200, 50)
+        accept_box_rect = pygame.Rect(xpos, 400, 200, 85)
+        self.yes_button_rect = pygame.Rect(xpos2 - 20, 450, 50, 25)
+        self.no_button_rect = pygame.Rect(xpos2 + 40, 450, 50, 25)
+
+        # draw the accept box and buttons
+        pygame.draw.rect(self.board.screen, button_colour, accept_box_rect)
+        self.board.screen.blit(self.font2.render("Do you accept?", True, text_colour), accept_text_rect)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.yes_button_rect)
+        pygame.draw.rect(self.board.screen, (255, 255, 255), self.no_button_rect)
+        self.board.screen.blit(self.font2.render("Yes", True, text_colour), self.yes_button_rect)
+        self.board.screen.blit(self.font2.render("No", True, text_colour), self.no_button_rect)
+
+        if self.trade_with == self.players[0]:
+            pygame.draw.rect(self.board.screen, PLAYERCOLOUR1, self.player1_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+
+        if self.trade_with == self.players[1]:
+            pygame.draw.rect(self.board.screen, PLAYERCOLOUR2, self.player2_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
+
+        if self.trade_with == self.players[2]:
+            pygame.draw.rect(self.board.screen, PLAYERCOLOUR3, self.player3_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
+
+        if self.trade_with == self.players[3]:
+            pygame.draw.rect(self.board.screen, PLAYERCOLOUR4, self.player4_rect)
+            self.board.screen.blit(self.font.render("P4", True, BLACK), self.player4_rect)
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
