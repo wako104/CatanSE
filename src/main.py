@@ -187,9 +187,11 @@ class Main:
 
         # Define the positions and sizes of the button and text
         button_rect = pygame.Rect(xpos, 60, 200, 315)
+        button_rect_border = pygame.Rect(xpos - 5, 60 - 5, 200 + 10, 315 + 10)
         text_rect = pygame.Rect(xpos2 - 20, 95, 20, 20)
 
         # Draw the button and text
+        pygame.draw.rect(self.board.screen, WHITE, button_rect_border)
         pygame.draw.rect(self.board.screen, button_colour, button_rect)
         self.board.screen.blit(self.font.render("Send", True, text_colour), text_rect)
         self.board.screen.blit(self.font.render("Receive", True, text_colour), (xpos2 - 20, 185))
@@ -412,6 +414,7 @@ class Main:
                     self.wood_r = 0
                     self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
                     self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
+                    self.trade_with = None
 
                 if self.resource_box_c.collidepoint(location):
                     self.clay_t += 1
@@ -435,17 +438,20 @@ class Main:
                     self.wood_r += 1
 
                 if self.send_trade_rect.collidepoint(location):
-                    print("Trade request")
-                    req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
-                    give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
-                    self.request_trade(req, give)
-                    print(req)
-                    print(give)
-                    self.colour1 = (241, 140, 140)
-                    self.colour2 = (170, 235, 255)
-                    self.colour3 = (173, 228, 206)
-                    self.colour4 = (255, 235, 150)
-                    self.draw_accept_trade_offer()
+                    if self.trade_with != None:
+                        req = {CLAY: self.clay_r, ORE: self.ore_r, SHEEP: self.sheep_r, WHEAT: self.wheat_r, WOOD: self.wood_r}
+                        give = {CLAY: self.clay_t, ORE: self.ore_t, SHEEP: self.sheep_t, WHEAT: self.wheat_t, WOOD: self.wood_t}
+
+                        self.request_trade(req, give)
+                        print(req)
+                        print(give)
+                        self.colour1 = (241, 140, 140)
+                        self.colour2 = (170, 235, 255)
+                        self.colour3 = (173, 228, 206)
+                        self.colour4 = (255, 235, 150)
+                        self.draw_accept_trade_offer()
+                    else:
+                        pass
 
                 if self.player1_rect.collidepoint(location):
                     if self.red_counter == 1:
