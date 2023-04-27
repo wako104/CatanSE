@@ -519,7 +519,6 @@ class Main:
                 self.accept_trade(self.current_player, self.players[1])
 
     def draw_accept_trade_offer(self):
-
         player_rect_width = 30
         player_rect_height = 30
         y_pos_player = 272 + 25
@@ -532,27 +531,24 @@ class Main:
         ypos3 = ypos + 90
         ypos4 = ypos2 + 90
 
-        self.player1_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
-        self.player2_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
-        self.player3_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
-        self.player4_rect = pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+        player_rects = [
+            pygame.Rect(xpos2 - 20, 410, player_rect_width, player_rect_height)
+            for _ in range(len(self.players))
+        ]
 
         print(self.players[0])
         print(self.trade_with)
-
 
         xpos = WIDTH - 250
 
         button_colour = (200, 200, 200)
         text_colour = (0, 0, 0)
 
-        # define the positions and sizes of the accept box and buttons
         accept_text_rect = pygame.Rect(xpos + 48, 415, 200, 50)
         accept_box_rect = pygame.Rect(xpos, 400, 200, 85)
         self.yes_button_rect = pygame.Rect(xpos2 - 20, 450, 50, 25)
         self.no_button_rect = pygame.Rect(xpos2 + 40, 450, 50, 25)
 
-        # draw the accept box and buttons
         pygame.draw.rect(self.board.screen, button_colour, accept_box_rect)
         self.board.screen.blit(self.font2.render("Do you accept?", True, text_colour), accept_text_rect)
         pygame.draw.rect(self.board.screen, (255, 255, 255), self.yes_button_rect)
@@ -560,21 +556,12 @@ class Main:
         self.board.screen.blit(self.font2.render("Yes", True, text_colour), self.yes_button_rect)
         self.board.screen.blit(self.font2.render("No", True, text_colour), self.no_button_rect)
 
-        if self.trade_with == self.players[0]:
-            pygame.draw.rect(self.board.screen, PLAYERCOLOUR1, self.player1_rect)
-            self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+        player_colours = [PLAYERCOLOUR1, PLAYERCOLOUR2, PLAYERCOLOUR3, PLAYERCOLOUR4]
 
-        if self.trade_with == self.players[1]:
-            pygame.draw.rect(self.board.screen, PLAYERCOLOUR2, self.player2_rect)
-            self.board.screen.blit(self.font.render("P2", True, BLACK), self.player2_rect)
-
-        if self.trade_with == self.players[2]:
-            pygame.draw.rect(self.board.screen, PLAYERCOLOUR3, self.player3_rect)
-            self.board.screen.blit(self.font.render("P3", True, BLACK), self.player3_rect)
-
-        if self.trade_with == self.players[3]:
-            pygame.draw.rect(self.board.screen, PLAYERCOLOUR4, self.player4_rect)
-            self.board.screen.blit(self.font.render("P4", True, BLACK), self.player4_rect)
+        for i, player in enumerate(self.players):
+            if self.trade_with == player:
+                pygame.draw.rect(self.board.screen, player_colours[i], player_rects[i])
+                self.board.screen.blit(self.font.render(f"P{i + 1}", True, BLACK), player_rects[i])
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
