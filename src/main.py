@@ -453,15 +453,16 @@ class Main:
                         if req_zero and give_zero:
                             pass
 
-                        else:
+                        elif all(req[key] <= self.trade_with.resources[key] for key in req) and all(give[key] <= self.current_player.resources[key] for key in give):
                             self.request_trade(req, give)
-                            print(req)
-                            print(give)
                             self.colour1 = (241, 140, 140)
                             self.colour2 = (170, 235, 255)
                             self.colour3 = (173, 228, 206)
                             self.colour4 = (255, 235, 150)
                             self.draw_accept_trade_offer()
+
+                        else:
+                            print("Players do not have required resources to trade!")
                     else:
                         pass
 
