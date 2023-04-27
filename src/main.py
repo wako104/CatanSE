@@ -22,6 +22,7 @@ class Main:
         self.turn_number = 1
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
+        self.dice_count = 0
 
     # main function to run the game
     def run(self):
@@ -183,6 +184,7 @@ class Main:
                 location = pygame.mouse.get_pos()
                 if self.end_turn_button_rect.collidepoint(location):
                     if self.can_end_turn(self.current_player):
+                        self.dice_count = 0
                         self.end_turn()
                     else:
                         print("Cannot end turn")
@@ -196,9 +198,17 @@ class Main:
                         if location[1] in range(option[0][1] - 10, option[0][1] + 10):
                             self.handle_road(self.current_player, option)
                 if self.dice.dice_rect.collidepoint(location):
-                    self.dice.roll()
-                    self.board.harvest_resource(self.dice.total_dice_num())
-                    print(self.dice.total_dice_num())
+                    if self.turn_number > 2:
+                        if not self.dice_count > 0:
+                            self.dice.roll()
+                            self.board.harvest_resource(self.dice.total_dice_num())
+                            print(self.dice.total_dice_num())
+                            self.dice_count += 1
+                        else:
+                            print("Player: " + str(self.current_player.num) + " has already rolled on this turn.")
+                    else:
+                        print("Cannot roll dice until initial placements have been made.")
+
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
@@ -250,6 +260,8 @@ class Main:
                 return True
             else:
                 return False
+        elif self.dice_count < 1:
+            return False
         else:
             return True
 
