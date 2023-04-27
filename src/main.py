@@ -462,6 +462,7 @@ class Main:
                     self.colour4 = (255, 235, 150)
                     self.trade_with = None
 
+# e21321
                 if self.resource_box_c.collidepoint(location):
                     self.clay_t += 1
                 if self.resource_box_o.collidepoint(location):
