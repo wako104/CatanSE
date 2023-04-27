@@ -77,6 +77,8 @@ class Main:
         self.trade_with = None
         self.placed_init_settlement = False
         self.placed_init_road = False
+        self.settlement_button_colour = (200, 150, 200)
+        self.road_button_colour = (200, 150, 200)
 
     # main function to run the game
     def run(self):
@@ -349,7 +351,7 @@ class Main:
     def draw_end_turn_button(self):
         button_width, button_height = 100, 50
         button_x = WIDTH - button_width - 10
-        button_y = HEIGHT - button_height - 10
+        button_y = HEIGHT - button_height - 50
         self.end_turn_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
         pygame.draw.rect(self.board.screen, (255, 0, 0), self.end_turn_button_rect)
         font = pygame.font.Font(None, 24)
@@ -358,22 +360,24 @@ class Main:
         self.board.screen.blit(text, text_pos)
 
     def draw_settlement_button(self):
-        pos_x = 20 + (66.8*5)
-        pos_y = HEIGHT - 135
+        pos_x = WIDTH - 350
+        pos_y = HEIGHT - 120
         button_width, button_height = 100, 87.8
         self.settlement_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
-        pygame.draw.rect(self.board.screen, (200, 150, 200), self.settlement_button_rect)
+        self.settlement_button_colour2 = (200, 65, 200)
+        pygame.draw.rect(self.board.screen, self.settlement_button_colour, self.settlement_button_rect)
         font = pygame.font.Font(None, 24)
         text = font.render("Settlement", 1, (100, 50, 100))
         text_pos = text.get_rect(center=self.settlement_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
     def draw_road_button(self):
-        pos_x = 20 + (66.8*8)
-        pos_y = HEIGHT - 135
+        pos_x = WIDTH - 230
+        pos_y = HEIGHT - 120
         button_width, button_height = 100, 87.8
+        self.road_button_colour2 = (200, 65, 200)
         self.road_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
-        pygame.draw.rect(self.board.screen, (200, 150, 200), self.road_button_rect)
+        pygame.draw.rect(self.board.screen, self.road_button_colour, self.road_button_rect)
         font = pygame.font.Font(None, 24)
         text = font.render("Road", 1, (100, 50, 100))
         text_pos = text.get_rect(center=self.road_button_rect.center)
@@ -469,7 +473,6 @@ class Main:
                     self.colour4 = (255, 235, 150)
                     self.trade_with = None
 
-# e21321
                 if self.resource_box_c.collidepoint(location):
                     self.clay_t += 1
                 if self.resource_box_o.collidepoint(location):
