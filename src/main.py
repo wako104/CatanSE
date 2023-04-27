@@ -238,7 +238,9 @@ class Main:
                 print("Cannot place another road on this turn")
                 return -1
         elif self.turn_number == 2:
-
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    location = pygame.mouse.get_pos()
             if count == 1:
                 self.board.place_road(player, location, True)
             else:
