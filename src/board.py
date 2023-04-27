@@ -50,6 +50,9 @@ class Board:
         polygon_v = []
         rows = [3, 4, 5, 4, 3]
         self.screen.fill(BG_COLOUR)
+        background_image = pygame.image.load("../resources/game_background.png")
+        background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+        self.screen.blit(background_image, (0,0))
         x = 170
         y = 150
         count = 0
