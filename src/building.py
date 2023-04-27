@@ -19,8 +19,15 @@ class Settlement:
 
 class City:
     def __init__(self, player, location, adjacent_vertices, adjacent_hex_centres, board):
-        pass
+        self.player = player
+        self.location = location
+        self.adjacent_vertices = adjacent_vertices
+        self.adjacent_hex_centres = adjacent_hex_centres
+        self.board = board
 
+    def collect_resource(self, location):
+        print("Player " + str(self.player.num) + " gets " + str(self.board.location_number_resource[location][1]))
+        self.player.get_resource(self.board.location_number_resource[location][1])
 
 class Development:
     def __init__(self):

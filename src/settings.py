@@ -35,6 +35,8 @@ PLAYERCOLOUR4 = (255, 165, 0)
 # SETTLEMENT = [Resource.Wood, Resource.Brick, Resource.Sheep, Resource.Wheat]
 ROAD = [WOOD, CLAY]
 SETTLEMENT = [WOOD, CLAY, SHEEP, WHEAT]
+CITY = [WHEAT, WHEAT, ORE, ORE, ORE]
+DEVELOPMENT = [SHEEP, WHEAT, ORE]
 
 # board tokens
 A = 5

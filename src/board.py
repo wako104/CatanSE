@@ -203,6 +203,7 @@ class Board:
                                 self.edge_vertices.append((vertex, vertex_2))
         self.get_edge_centres()
         self.get_vertex_adjacent_centres()
+        print(self.hex_resource)
 
     def get_edge_centres(self):
         for edge in self.edge_vertices:
@@ -222,8 +223,6 @@ class Board:
                     # Check if the centre is in vertex_adjacent_centres
                     if centre not in self.vertex_adjacent_centres[vertex]:
                         self.vertex_adjacent_centres[vertex].append(centre)
-        print("Test")
-        print(self.vertex_adjacent_centres)
 
     # method called when clicking on a location you want to place a settlement
     def place_settlement(self, player, initial_placement):
@@ -287,6 +286,10 @@ class Board:
                                 print("Player " + str(player.num) + " has " + str(player.get_victory_points()) + " victory points")
 
     def initial_resource_collection(self, player, settlement):
+        for location in self.location_materials:
+            if settlement.location == location:
+                for resource in self.location_materials[location]:
+                    player.get_resource(resource)
         pass
 
     # Method to place a road on the board
@@ -337,20 +340,17 @@ class Board:
 
             if error == 1:
                 print("Location not available")
-                self.place_road(player, initial_placement)
+                return False
                 return -1
             elif error == 2:
                 print("Cannot place a road next to enemy settlement.")
-                self.place_road(player, initial_placement)
-                return -1
+                return False
             elif error == 3:
                 print("Must be next to your settlement or road.")
-                self.place_road(player, initial_placement)
-                return -1
+                return False
             elif error == 4:
                 print("Must be next to your own road.")
-                self.place_road(player, initial_placement)
-                return -1
+                return False
             elif error == 0:
                 new_road = Road(player, option)
                 self.existing_roads.append(new_road)
@@ -372,16 +372,45 @@ class Board:
                 for settlement in self.existing_settlements:
                     if location in settlement.adjacent_hex_centres:
                         settlement.collect_resource(location)
+                for city in self.existing_cities:
+                    if location in city.adjacent_hex_centres:
+                        city.collect_resource(location)
 
-    def build_city(self, player, option):
-        made = False
-        for settlement in self.existing_settlements:
-            if settlement.location == option and player == settlement.player:
-                new_city = City(settlement.player, settlement.location, settlement.adjacent_vertices, settlement.adjacent_hex_centres, settlement.board)
-                self.existing_cities.append(new_city)
-                self.existing_settlements.remove(settlement)
-                made = True
-            elif settlement.location == option:
-                print("Can only build a city on your own settlement.")
-        if not made:
-            print("Can only build a city over a settlement")
+    def build_city(self, player):
+        chosen_location = False
+        while not chosen_location:
+            wait = pygame.event.wait()
+            pygame.mouse.set_cursor(pygame.cursors.ball)
+            if wait.type == MOUSEBUTTONDOWN:
+                mouse_loc = pygame.mouse.get_pos()
+                for option in self.unique_v:
+                    if mouse_loc[0] in range(option[0] - 15, option[0] + 15):
+                        if mouse_loc[1] in range(option[1] - 15, option[1] + 15):
+                            found = False
+                            owned = 0
+                            for required in CITY:
+                                if required not in player.resources.keys() or player.resources[required] < 1:
+                                    print("Do not have required resources for a city")
+                                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                    return -1
+                                else:
+                                    owned += 1
+                            for settlement in self.existing_settlements:
+                                if settlement.location == option:
+                                    if player == settlement.player:
+                                        new_city = City(settlement.player, settlement.location, settlement.adjacent_vertices, settlement.adjacent_hex_centres, settlement.board)
+                                        self.existing_cities.append(new_city)
+                                        pygame.draw.rect(self.screen, player.colour, pygame.Rect(option[0]-10, option[1]-10, 20, 20))
+                                        player.add_victory_point()
+                                        print("City created for player " + str(player.num))
+                                        pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                        return -1
+                                    else:
+                                        print("Can only build a city on your own settlement.")
+                                        self.build_city(player)
+                                        return -1
+                                    found = True
+                                elif not found:
+                                    print("Can only build a city over a settlement")
+                                    self.build_city(player)
+                                    return -1
