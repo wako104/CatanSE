@@ -757,7 +757,7 @@ class Main:
                 elif self.monopoly_card.collidepoint(location):
                     self.play_monopoly(self.current_player)
                 elif self.yofp_card.collidepoint(location):
-                    self.yearofplenty_road(self.current_player)
+                    self.play_yofp(self.current_player)
 
                 
                 if self.reset_rect.collidepoint(location):
@@ -971,7 +971,7 @@ class Main:
         else:
             self.handle_road(player, None)
             self.handle_road(player, None)
-            player.cards[ROAD] -= 1
+            player.cards[DEVELOPMENTROAD] -= 1
 
     def play_monopoly(self, player):
         if player.cards[MONOPOLY] == 0:
@@ -988,6 +988,17 @@ class Main:
             for i in range(count):
                 player.get_resource(choice)
             player.cards[MONOPOLY] -= 1
+
+    def play_yofp(self, player):
+        if player.cards[YEAROFPLENTY] == 0:
+            print("Player does not have monopoly card")
+            return -1
+        else:
+            resources = [CLAY, ORE, WHEAT, SHEEP, WOOD, SAND]
+            for i in range(2):
+                choice = random.choice(resources)
+                player.get_resource(choice)
+            player.cards[YEAROFPLENTY] -= 1
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
