@@ -338,10 +338,16 @@ class Board:
                 if exit_rect.collidepoint(mouse_loc):
                     pygame.mouse.set_cursor(pygame.cursors.arrow)
                     return -1
-            for option in self.centre_edge:
-                if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
-                    if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
-                        selected = option
+                for option in self.centre_edge:
+                    print(option)
+                    print("option^")
+                    if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
+                        if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
+                            selected = option
+                if selected is None:
+                    print("Use a valid road location")
+                    self.place_road(player, initial_placement, option, repeat, exit_rect)
+                    return -1
         else:
             selected = option
 
@@ -364,9 +370,10 @@ class Board:
                 for settlement in self.existing_settlements:
                     if settlement.location == vertex:
                         adjacent_settlement.append(settlement)
-
+            print("tesdgadfgad")
             for road in adjacent_road:
                 if road.player == player:
+                    print("hmmm")
                     error = 0
                     break
                 else:
