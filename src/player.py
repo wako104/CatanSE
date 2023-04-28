@@ -22,7 +22,7 @@ class Player:
         self.cards = {KNIGHT: 0, DEVELOPMENTROAD: 0, YEAROFPLENTY: 0, MONOPOLY: 0, VICTORYPOINT: 0}
         # players victory point
         self.victory_points = 0
-        self.resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
+        self.resources = {CLAY: 10, ORE: 10, SHEEP: 10, WHEAT: 10, WOOD: 10}
 
     def add_victory_point(self):
         self.victory_points += 1

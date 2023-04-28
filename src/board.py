@@ -379,6 +379,8 @@ class Board:
 
     def build_city(self, player):
         chosen_location = False
+        found = False
+        occupied = False
         while not chosen_location:
             wait = pygame.event.wait()
             pygame.mouse.set_cursor(pygame.cursors.ball)
@@ -387,7 +389,6 @@ class Board:
                 for option in self.unique_v:
                     if mouse_loc[0] in range(option[0] - 15, option[0] + 15):
                         if mouse_loc[1] in range(option[1] - 15, option[1] + 15):
-                            found = False
                             owned = 0
                             for required in CITY:
                                 if required not in player.resources.keys() or player.resources[required] < 1:
@@ -396,6 +397,11 @@ class Board:
                                     return -1
                                 else:
                                     owned += 1
+                            for city in self.existing_cities:
+                                if city.location == option:
+                                    print("Cannot build on a city")
+                                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                                    return -1
                             for settlement in self.existing_settlements:
                                 if settlement.location == option:
                                     if player == settlement.player:
@@ -408,10 +414,10 @@ class Board:
                                         return -1
                                     else:
                                         print("Can only build a city on your own settlement.")
-                                        self.build_city(player)
+                                        pygame.mouse.set_cursor(pygame.cursors.arrow)
                                         return -1
-                                    found = True
-                                elif not found:
+                                found = True
+                                if not found:
                                     print("Can only build a city over a settlement")
-                                    self.build_city(player)
+                                    pygame.mouse.set_cursor(pygame.cursors.arrow)
                                     return -1
