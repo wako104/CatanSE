@@ -28,15 +28,17 @@ class Player:
         # players victory point
         self.victory_points = 0
         # players development cards
-        self.resources = {CLAY: 10, ORE: 10, SHEEP: 10, WHEAT: 10, WOOD: 10}
+        self.resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD: 0}
         # number of knight card player has
         self.knight_counter = 0
+        #
+        self.largest_army = 0
 
     def add_victory_point(self):
         self.victory_points += 1
 
     def get_victory_points(self):
-        return self.victory_points
+        return self.victory_points + self.largest_army
 
     def get_resource(self, resource):
         if resource in self.resources.keys():
