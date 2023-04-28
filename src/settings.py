@@ -1,4 +1,3 @@
-from cards import Resource, Development
 import pygame
 
 FPS = 60
@@ -20,11 +19,11 @@ SHEEP = (149,182,8)
 WOOD = (133,94,66)
 SAND = (218,211,150)
 
-KNIGHT = 0
-DEVELOPMENTROAD = 0
-YEAROFPLENTY = 0
-MONOPOLY = 0
-VICTORYPOINT = 0
+KNIGHT = (138, 137, 132)
+DEVELOPMENTROAD = (0, 0, 0)
+YEAROFPLENTY = (255, 213, 0)
+MONOPOLY = (171, 76, 21)
+VICTORYPOINT = (214, 180, 11)
 
 PLAYERCOLOUR1 = (241,0,0)
 PLAYERCOLOUR2 = (18,147,255)
@@ -63,3 +62,9 @@ r_ore = pygame.image.load('../resources/r_ore.jpg')
 r_sheep = pygame.image.load('../resources/r_sheep.jpg')
 r_wheat = pygame.image.load('../resources/r_wheat.jpg')
 r_wood = pygame.image.load('../resources/r_wood.jpg')
+
+d_knight = pygame.image.load("../resources/d_knight.png")
+d_road = pygame.image.load("../resources/d_road.png")
+d_yop = pygame.image.load("../resources/d_yofp.png")
+d_monopoly = pygame.image.load("../resources/d_monopoly.png")
+d_victory_point = pygame.image.load("../resources/d_victory_point.png")

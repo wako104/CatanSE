@@ -18,7 +18,7 @@ class Player:
             self.colour = PLAYERCOLOUR4
         # initial road placements
         self.initial_placements = []
-        # the cards a player has
+        # the development cards a player has
         self.cards = {KNIGHT: 0, DEVELOPMENTROAD: 0, YEAROFPLENTY: 0, MONOPOLY: 0, VICTORYPOINT: 0}
         # players victory point
         self.victory_points = 0

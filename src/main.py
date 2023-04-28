@@ -102,6 +102,7 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
             self.board.screen.blit(turn_number_text, (10, 10))
             self.draw_resources()
+            self.draw_development()
             self.draw_trade_button()
             current_player_text = self.font.render("Player : " + str(self.current_player.num), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
@@ -348,6 +349,29 @@ class Main:
         self.board.screen.blit(wheat_text, (posx2 + (67*3), HEIGHT - 37.8))
         self.board.screen.blit(wood_text, (posx2 + (67*4), HEIGHT - 37.8))
 
+    def draw_development(self):
+        posx = 20
+        posy = HEIGHT - 700
+
+        card_rect = pygame.Rect(posx, posy, 56.8, 87.8)
+        pygame.draw.rect(self.board.screen, BLACK, card_rect)
+
+
+        d_victory_point2 = pygame.transform.scale(d_victory_point, (56.8, 70))
+        self.board.screen.blit(d_victory_point2, (posx, posy + 17.8))
+        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
+        self.board.screen.blit(d_knight2, (posx, posy + (100 * 2)))
+        d_road2 = pygame.transform.scale(d_road, (56.8, 87.8))
+        self.board.screen.blit(d_road2, (posx, posy + 100))
+        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
+        self.board.screen.blit(d_knight2, (posx, posy + (100 * 3)))
+        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
+        self.board.screen.blit(d_knight2, (posx, posy + (100 * 4)))
+
+        font = pygame.font.Font(pygame.font.get_default_font(), 30)
+        knight_text = font.render(str(self.current_player.cards[KNIGHT]), 1, BLACK)
+        self.board.screen.blit(knight_text, (posx + 80, posy))
+
     # creates end turn button
     def draw_end_turn_button(self):
         button_width, button_height = 100, 50
@@ -439,6 +463,8 @@ class Main:
                 while not selected:
                     pygame.mouse.set_cursor(pygame.cursors.ball)
                     wait = pygame.event.wait()
+                    if wait.type == pygame.QUIT:
+                        self.quit()
                     if wait.type == MOUSEBUTTONDOWN:
                         mouse_position = pygame.mouse.get_pos()
                         for option in self.board.unique_v:
@@ -453,6 +479,8 @@ class Main:
                 while not selected:
                     pygame.mouse.set_cursor(pygame.cursors.ball)
                     wait = pygame.event.wait()
+                    if wait.type == pygame.QUIT:
+                        self.quit()
                     if wait.type == MOUSEBUTTONDOWN:
                         mouse_position = pygame.mouse.get_pos()
                         for option in self.board.centre_edge:
@@ -709,6 +737,7 @@ class Main:
             if count == 2:
                 print("Cannot place another road this turn")
                 return -1
+        print("test")
         pygame.mouse.set_cursor(pygame.cursors.ball)
         wait = pygame.event.wait()
         while wait.type != MOUSEBUTTONDOWN:
