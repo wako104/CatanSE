@@ -235,6 +235,8 @@ class Board:
             if not initial_placement:
                 wait = pygame.event.wait()
                 pygame.mouse.set_cursor(pygame.cursors.ball)
+                while wait.type != MOUSEBUTTONDOWN:
+                    wait = pygame.event.wait()
                 if wait.type == MOUSEBUTTONDOWN:
                     mouse_loc = pygame.mouse.get_pos()
                     if exit_rect.collidepoint(mouse_loc):
@@ -293,6 +295,8 @@ class Board:
                 self.place_settlement(player, initial_placement, location, True)
                 return -1
             else:
+                print(selected)
+                print("aldifg")
                 new_settlement\
                     = Settlement(player, selected, adjacent_vertices, self.vertex_adjacent_centres[selected], self)
                 self.existing_settlements.append(new_settlement)
@@ -332,7 +336,7 @@ class Board:
                 wait = pygame.event.wait()
             if wait.type == MOUSEBUTTONDOWN:
                 mouse_loc = pygame.mouse.get_pos()
-            for option in self.board.centre_edge:
+            for option in self.centre_edge:
                 if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                     if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
                         selected = option
