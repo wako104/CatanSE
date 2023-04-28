@@ -1,6 +1,11 @@
 from settings import *
 from board import Board
 
+'''
+Author: Will, Rob
+Class: Each object of this class is a player in the game. Allows us to create players and allows players to trade 
+and play the game
+'''
 
 class Player:
 

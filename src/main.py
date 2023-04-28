@@ -11,6 +11,11 @@ from dice import Dice
 import random
 from building import Settlement
 
+'''
+Author: Rob, Tyler, Will
+Class: Main class of the program to start the game, handles all user inputs and 'events' 
+'''
+
 
 class Main:
 

@@ -1,6 +1,11 @@
 import pygame
 from settings import *
 
+'''
+Author: Tyler
+Class: Handles buildings
+'''
+
 class Settlement:
 
     def __init__(self, player, location, adjacent_vertices, adjacent_hex_centres, board):

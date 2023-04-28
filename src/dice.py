@@ -2,6 +2,10 @@ import random
 import pygame
 from settings import *
 
+'''
+Author: Rob
+Class: Creates a dice that can be rolled by a player
+'''
 
 class Dice:
 
