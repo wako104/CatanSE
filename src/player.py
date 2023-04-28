@@ -34,6 +34,10 @@ class Player:
         if resource in self.resources.keys():
             self.resources[resource] += 1
 
+    def get_development(self, development):
+        if development in self.cards.keys():
+            self.cards[development] += 1
+
     def receive_trade(self, resource_dictionary):
         for resource, amount in resource_dictionary.items():
             self.resources[resource] += amount

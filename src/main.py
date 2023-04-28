@@ -8,6 +8,7 @@ import sys
 from board import Board
 from player import Player
 from dice import Dice
+import random
 from building import Settlement
 
 
@@ -108,6 +109,7 @@ class Main:
             pygame.draw.rect(self.board.screen, BG_COLOUR, (10, HEIGHT - 180, 150, 30))
             self.board.screen.blit(current_player_text, (10, HEIGHT - 180))
             self.draw_end_turn_button()
+            self.draw_development_button()
             self.draw_settlement_button()
             self.draw_road_button()
             self.draw_city_button()
@@ -392,26 +394,31 @@ class Main:
         vp_text = font.render(str(self.current_player.cards[VICTORYPOINT]), 1, BLACK)
         vp_text_rect = vp_text.get_rect()
         vp_text_rect.center = (vp_card.centerx + 50, vp_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR3, vp_text_rect)
         self.board.screen.blit(vp_text, vp_text_rect)
 
         knight_text = font.render(str(self.current_player.cards[KNIGHT]), 1, BLACK)
         knight_text_rect = knight_text.get_rect()
         knight_text_rect.center = (knight_card.centerx + 50, knight_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, knight_text_rect)
         self.board.screen.blit(knight_text, knight_text_rect)
         
         road_text = font.render(str(self.current_player.cards[DEVELOPMENTROAD]), 1, BLACK)
         road_text_rect = road_text.get_rect()
         road_text_rect.center = (road_card.centerx + 50, road_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, road_text_rect)
         self.board.screen.blit(road_text, road_text_rect)
 
         monopoly_text = font.render(str(self.current_player.cards[MONOPOLY]), 1, BLACK)
         monopoly_text_rect = monopoly_text.get_rect()
         monopoly_text_rect.center = (monopoly_card.centerx + 50, monopoly_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, monopoly_text_rect)
         self.board.screen.blit(monopoly_text, monopoly_text_rect)
         
         yofp_text = font.render(str(self.current_player.cards[YEAROFPLENTY]), 1, BLACK)
         yofp_text_rect = yofp_text.get_rect()
         yofp_text_rect.center = (yofp_card.centerx + 50, yofp_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR3, yofp_text_rect)
         self.board.screen.blit(yofp_text, yofp_text_rect)
 
     # creates end turn button
@@ -424,24 +431,6 @@ class Main:
         font = pygame.font.Font(None, 24)
         text = font.render("End Turn", 1, (255, 255, 255))
         text_pos = text.get_rect(center=self.end_turn_button_rect.center)
-        self.board.screen.blit(text, text_pos)
-        
-    def draw_development_button(self):
-        pos_x = WIDTH - 600
-        pos_y = HEIGHT - 120
-        button_width, button_height = 100, 50
-        development_button_colour = ()
-
-    def draw_city_button(self):
-        pos_x = WIDTH - 470
-        pos_y = HEIGHT - 120
-        button_width, button_height = 100, 87.8
-        self.city_button_colour = (200, 65, 200)
-        self.city_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
-        pygame.draw.rect(self.board.screen, self.city_button_colour, self.city_button_rect)
-        font = pygame.font.Font(None, 24)
-        text = font.render("City", 1, (100, 50, 100))
-        text_pos = text.get_rect(center=self.city_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
     def draw_settlement_button(self):
@@ -466,6 +455,30 @@ class Main:
         font = pygame.font.Font(None, 24)
         text = font.render("Road", 1, (100, 50, 100))
         text_pos = text.get_rect(center=self.road_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    def draw_city_button(self):
+        pos_x = WIDTH - 470
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 87.8
+        self.city_button_colour = (200, 65, 200)
+        self.city_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.city_button_colour, self.city_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("City", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.city_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
+    def draw_development_button(self):
+        pos_x = WIDTH - 600
+        pos_y = HEIGHT - 120
+        button_width, button_height = 110, 87.8
+        self.development_button_colour = (230, 131, 32)
+        self.development_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.development_button_colour, self.development_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Buy\nDevelopment\nCard", True, (100, 50, 100))
+        text_pos = text.get_rect(center=self.development_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
     # ends turn
@@ -560,6 +573,8 @@ class Main:
                     self.handle_road(self.current_player, None)
                 elif self.city_button_rect.collidepoint(location):
                     self.handle_city(self.current_player)
+                elif self.development_button_rect.collidepoint(location):
+                    self.handle_get_development(self.current_player)
                 if self.dice.dice_rect.collidepoint(location):
                     if self.turn_number > 2:
                         if not self.dice_count > 0:
@@ -754,6 +769,18 @@ class Main:
             if self.trade_with == player:
                 pygame.draw.rect(self.board.screen, player_colours[i], player_rects[i])
                 self.board.screen.blit(self.font.render(f"P{i + 1}", True, BLACK), player_rects[i])
+
+    def handle_get_development(self, player):
+        for required in DEVELOPMENT:
+            if required not in player.resources.keys() or player.resources[required] < 1:
+                print("Not enough resources to get development card")
+                return -1
+        else:
+            dev_cards = [VICTORYPOINT, KNIGHT, DEVELOPMENTROAD, MONOPOLY, YEAROFPLENTY]
+            choice = random.choice(dev_cards)
+            player.get_development(choice)
+            for required in DEVELOPMENT:
+                player.resources[required] -= 1
 
     def handle_settlement(self, player):
         count = self.player_settlement_count(player)
