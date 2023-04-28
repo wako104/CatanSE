@@ -256,7 +256,12 @@ class Board:
                     for option in self.unique_v:
                         if mouse_loc[0] in range(option[0] - 10, option[0] + 10):
                             if mouse_loc[1] in range(option[1] - 10, option[1] + 10):
+                                print("found option")
                                 selected = option
+                    if selected is None:
+                        print("Use a valid settlement location")
+                        self.place_settlement(player, initial_placement, location, True, exit_rect)
+                        return -1
             else:
                 selected = location
             if not initial_placement:

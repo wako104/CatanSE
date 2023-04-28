@@ -610,7 +610,6 @@ class Main:
                     if wait.type == MOUSEBUTTONDOWN:
                         mouse_position = pygame.mouse.get_pos()
                         for option in self.board.centre_edge:
-                            print("test123")
                             if mouse_position[0] in range(option[0][0] - 15, option[0][0] + 15):
                                 if mouse_position[1] in range(option[0][1] - 15, option[0][1] + 15):
                                     print("found edge")
@@ -881,7 +880,6 @@ class Main:
             if count == 2:
                 print("Cannot place another road this turn")
                 return -1
-        print("test")
         pygame.mouse.set_cursor(pygame.cursors.ball)
         if location is None:
             wait = pygame.event.wait()
