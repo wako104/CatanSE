@@ -1029,6 +1029,7 @@ class Main:
 
     def handle_road(self, player, location):
         count = self.player_road_count(player)
+        selected = None
         if self.turn_number == 1:
             if count == 1:
                 print("Cannot place another road this turn")

@@ -233,9 +233,9 @@ class Board:
     def place_settlement(self, player, initial_placement, location, repeat, exit_rect):
         chosen_location = False
         selected = None
-        print("Test")
+        adjacent_roads = []
+        owned_adjacent_road = []
         while not chosen_location:
-            print(repeat)
             if not initial_placement:
                 wait = pygame.event.wait()
                 pygame.mouse.set_cursor(pygame.cursors.ball)
@@ -291,12 +291,33 @@ class Board:
                     for vertex in edge:
                         if vertex != selected:
                             adjacent_vertices.append(vertex)
+
+            for road in self.existing_roads:
+                if selected in road.location[1]:
+                    for vertex in road.location[1]:
+                        if vertex in road.location[1]:
+                            adjacent_roads.append(road)
+
+            for road in adjacent_roads:
+                if road.player == player:
+                    owned_adjacent_road.append(road)
+
+            if len(self.existing_settlements) > 3:
+                if len(owned_adjacent_road) == 0:
+                    error = 3
+
+            print(len(owned_adjacent_road))
+            print("gldiua")
             if error == 1:
                 print("Location not available")
                 self.place_settlement(player, initial_placement, location, True, exit_rect)
                 return -1
             elif error == 2:
                 print("Cannot place adjacent to another settlement.")
+                self.place_settlement(player, initial_placement, location, True, exit_rect)
+                return -1
+            elif error == 3:
+                print("Can only place settlements on the end of your own road")
                 self.place_settlement(player, initial_placement, location, True, exit_rect)
                 return -1
             else:
