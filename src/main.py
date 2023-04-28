@@ -113,6 +113,7 @@ class Main:
             self.draw_settlement_button()
             self.draw_road_button()
             self.draw_city_button()
+            self.draw_exit_button()
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -518,6 +519,18 @@ class Main:
         text_pos = text.get_rect(center=self.road_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
+    def draw_exit_button(self):
+        pos_x = WIDTH - 230
+        pos_y = HEIGHT - 220
+        button_width, button_height = 60, 60
+        self.exit_button_colour = (255, 0, 0)
+        self.exit_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.exit_button_colour, self.exit_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("Exit", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.exit_button_rect.center)
+        self.board.screen.blit(text, text_pos)
+
     # ends turn
     def end_turn(self):
         player_count = len(self.players)
@@ -814,18 +827,18 @@ class Main:
         if location is not None:
             if self.turn_number == 1:
                 if count == 0:
-                    self.board.place_settlement(player, True, location, False)
+                    self.board.place_settlement(player, True, location, False, self.exit_button_rect)
                 else:
                     print("Cannot place another settlement on this turn")
                     return -1
             elif self.turn_number == 2:
                 if count == 1:
-                    self.board.place_settlement(player, True, location, False)
+                    self.board.place_settlement(player, True, location, False, self.exit_button_rect)
                 else:
                     print("Cannot place another settlement on this turn")
                     return -1
         else:
-            self.board.place_settlement(player, False, None, False)
+            self.board.place_settlement(player, False, None, False, self.exit_button_rect)
 
         pygame.mouse.set_cursor(pygame.cursors.arrow)
 
