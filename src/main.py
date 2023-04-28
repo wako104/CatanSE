@@ -445,26 +445,31 @@ class Main:
         vp_text = font.render(str(self.current_player.cards[VICTORYPOINT]), 1, BLACK)
         vp_text_rect = vp_text.get_rect()
         vp_text_rect.center = (vp_card.centerx + 50, vp_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR3, vp_text_rect)
         self.board.screen.blit(vp_text, vp_text_rect)
 
         knight_text = font.render(str(self.current_player.cards[KNIGHT]), 1, BLACK)
         knight_text_rect = knight_text.get_rect()
         knight_text_rect.center = (knight_card.centerx + 50, knight_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, knight_text_rect)
         self.board.screen.blit(knight_text, knight_text_rect)
         
         road_text = font.render(str(self.current_player.cards[DEVELOPMENTROAD]), 1, BLACK)
         road_text_rect = road_text.get_rect()
         road_text_rect.center = (road_card.centerx + 50, road_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, road_text_rect)
         self.board.screen.blit(road_text, road_text_rect)
 
         monopoly_text = font.render(str(self.current_player.cards[MONOPOLY]), 1, BLACK)
         monopoly_text_rect = monopoly_text.get_rect()
         monopoly_text_rect.center = (monopoly_card.centerx + 50, monopoly_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR2, monopoly_text_rect)
         self.board.screen.blit(monopoly_text, monopoly_text_rect)
         
         yofp_text = font.render(str(self.current_player.cards[YEAROFPLENTY]), 1, BLACK)
         yofp_text_rect = yofp_text.get_rect()
         yofp_text_rect.center = (yofp_card.centerx + 50, yofp_card.centery)
+        pygame.draw.rect(self.board.screen, BG_COLOUR3, yofp_text_rect)
         self.board.screen.blit(yofp_text, yofp_text_rect)
 
     # creates end turn button
@@ -600,6 +605,8 @@ class Main:
                 while not selected:
                     pygame.mouse.set_cursor(pygame.cursors.ball)
                     wait = pygame.event.wait()
+                    if wait.type == pygame.QUIT:
+                        self.quit()
                     if wait.type == MOUSEBUTTONDOWN:
                         mouse_position = pygame.mouse.get_pos()
                         for option in self.board.centre_edge:
