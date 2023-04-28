@@ -989,10 +989,10 @@ class Main:
                     if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
                             selected = option
-                    if selected is None:
-                        print("Use a valid road location")
-                        self.place_road(player, False, option, True, self.exit_button_rect)
-                        return -1
+                if selected is None:
+                    print("Use a valid road location")
+                    self.place_road(player, False, option, True, self.exit_button_rect)
+                    return -1
         else:
             selected = location
 

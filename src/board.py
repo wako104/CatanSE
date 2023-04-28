@@ -326,6 +326,8 @@ class Board:
         owned = 0
         adjacent_settlement = []
         adjacent_road = []
+        adjacent_edge = []
+        owned_roads = []
         chosen_location = False
         selected = None
 
@@ -339,8 +341,6 @@ class Board:
                     pygame.mouse.set_cursor(pygame.cursors.arrow)
                     return -1
                 for option in self.centre_edge:
-                    print(option)
-                    print("option^")
                     if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
                             selected = option
@@ -360,23 +360,30 @@ class Board:
                     else:
                         owned += 1
 
-            for edge in self.edge_vertices:
+            for edge in self.centre_edge:
+                for vertex in edge[1]:
+                    if vertex in selected[1]:
+                        adjacent_edge.append(edge)
+
+            for edge in adjacent_edge:
                 for road in self.existing_roads:
-                    for vertex in road.location[1]:
-                        if vertex in edge[1]:
+                    if road.location[0] == edge[0]:
+                        if road.player == player:
                             adjacent_road.append(road)
 
             for vertex in selected[1]:
                 for settlement in self.existing_settlements:
                     if settlement.location == vertex:
                         adjacent_settlement.append(settlement)
-            print("tesdgadfgad")
+
             for road in adjacent_road:
+                print("test")
                 if road.player == player:
-                    print("hmmm")
-                    error = 0
-                    break
-                else:
+                    print("test2")
+                    owned_roads.append(road)
+
+            if not len(owned_roads) < 3:
+                if len(adjacent_road) == 0:
                     error = 4
 
             for road in self.existing_roads:
@@ -387,8 +394,9 @@ class Board:
                 if settlement.player != player:
                     error = 2
 
-            if len(adjacent_settlement) == 0 & len(adjacent_road) == 0:
-                error = 3
+            if len(adjacent_settlement) == 0:
+                if len(owned_roads) == 0:
+                    error = 3
 
             print(error)
             if error == 1:
