@@ -285,18 +285,13 @@ class Board:
                             adjacent_vertices.append(vertex)
             if error == 1:
                 print("Location not available")
-                self.place_settlement(player, initial_placement, location, True)
+                self.place_settlement(player, initial_placement, location, True, exit_rect)
                 return -1
             elif error == 2:
                 print("Cannot place adjacent to another settlement.")
-                print(player.num)
-                print(initial_placement)
-                print(location)
-                self.place_settlement(player, initial_placement, location, True)
+                self.place_settlement(player, initial_placement, location, True, exit_rect)
                 return -1
             else:
-                print(selected)
-                print("aldifg")
                 new_settlement\
                     = Settlement(player, selected, adjacent_vertices, self.vertex_adjacent_centres[selected], self)
                 self.existing_settlements.append(new_settlement)
@@ -322,7 +317,7 @@ class Board:
         pass
 
     # Method to place a road on the board
-    def place_road(self, player, option, initial_placement, repeat):
+    def place_road(self, player, option, initial_placement, repeat, exit_rect):
         error = 0
         owned = 0
         adjacent_settlement = []
@@ -336,6 +331,8 @@ class Board:
                 wait = pygame.event.wait()
             if wait.type == MOUSEBUTTONDOWN:
                 mouse_loc = pygame.mouse.get_pos()
+            if exit_rect.collidepoint(mouse_loc):
+                return -1
             for option in self.centre_edge:
                 if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                     if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
@@ -384,19 +381,19 @@ class Board:
             print(error)
             if error == 1:
                 print("Location not available")
-                self.place_road(player, selected, initial_placement, True)
+                self.place_road(player, selected, initial_placement, True, exit_rect)
                 return -1
             elif error == 2:
                 print("Cannot place a road next to enemy settlement.")
-                self.place_road(player, selected, initial_placement, True)
+                self.place_road(player, selected, initial_placement, True, exit_rect)
                 return -1
             elif error == 3:
                 print("Must be next to your settlement or road.")
-                self.place_road(player, selected, initial_placement, True)
+                self.place_road(player, selected, initial_placement, True, exit_rect)
                 return -1
             elif error == 4:
                 print("Must be next to your own road.")
-                self.place_road(player, selected, initial_placement, True)
+                self.place_road(player, selected, initial_placement, True, exit_rect)
                 return -1
             elif error == 0:
                 new_road = Road(player, option)

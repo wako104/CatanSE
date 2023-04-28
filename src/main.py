@@ -895,16 +895,11 @@ class Main:
                             selected = option
         else:
             selected = location
-        print(selected)
-        print("hello")
-        print("Edge")
+
         if self.turn_number == 1:
             if count == 0:
                 if self.player_settlement_count(self.current_player) == 1:
-                    print("test")
-                    print(selected)
-                    if not self.board.place_road(player, selected, True, False):
-                        print("testing")
+                    if not self.board.place_road(player, selected, True, False, self.exit_button_rect):
                         self.handle_road(player, location)
                         return -1
                 else:
@@ -914,7 +909,6 @@ class Main:
                 pygame.mouse.set_cursor(pygame.cursors.arrow)
                 return -1
         elif self.turn_number == 2:
-
             if count == 1:
                 if self.player_settlement_count(self.current_player) == 2:
                     player_settlements = self.player_settlements(self.current_player)
@@ -926,7 +920,7 @@ class Main:
 
                     current_location = selected[0]
                     if current_location in required_locations:
-                        if not self.board.place_road(player, selected, True, False):
+                        if not self.board.place_road(player, selected, True, False, self.exit_button_rect):
                             self.handle_road(player, location)
                             return -1
                         print("Must place next to your most recent settlement")
@@ -941,7 +935,7 @@ class Main:
                 pygame.mouse.set_cursor(pygame.cursors.arrow)
                 return -1
         else:
-            self.board.place_road(player, selected, False, False)
+            self.board.place_road(player, selected, False, False, self.exit_button_rect)
         pygame.mouse.set_cursor(pygame.cursors.arrow)
 
     def handle_city(self, player):
