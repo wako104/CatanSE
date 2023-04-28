@@ -483,69 +483,69 @@ class Main:
         pos_x = 20
         pos_y = HEIGHT - 700
 
-        vp_card = pygame.Rect(pos_x, pos_y, 56.8, 87.8)
+        self.vp_card = pygame.Rect(pos_x, pos_y, 56.8, 87.8)
         vp = pygame.transform.scale(d_victory_point, (35, 55))
         vp_rect = vp.get_rect()
-        vp_rect.center = vp_card.center
-        pygame.draw.rect(self.board.screen, VICTORYPOINT, vp_card)
+        vp_rect.center = self.vp_card.center
+        pygame.draw.rect(self.board.screen, VICTORYPOINT, self.vp_card)
         self.board.screen.blit(vp, vp_rect)
 
-        knight_card = pygame.Rect(pos_x, pos_y + 100, 56.8, 87.8)
+        self.knight_card = pygame.Rect(pos_x, pos_y + 100, 56.8, 87.8)
         knight = pygame.transform.scale(d_knight, (40, 55))
         knight_rect = knight.get_rect()
-        knight_rect.center = knight_card.center
-        pygame.draw.rect(self.board.screen, KNIGHT, knight_card)
+        knight_rect.center = self.knight_card.center
+        pygame.draw.rect(self.board.screen, KNIGHT, self.knight_card)
         self.board.screen.blit(knight, knight_rect)
 
-        road_card = pygame.Rect(pos_x, pos_y + (100 * 2), 56.8, 87.8)
+        self.road_card = pygame.Rect(pos_x, pos_y + (100 * 2), 56.8, 87.8)
         road = pygame.transform.scale(d_road, (35, 55))
         road_rect = road.get_rect()
-        road_rect.center = road_card.center
-        pygame.draw.rect(self.board.screen, DEVELOPMENTROAD, road_card)
+        road_rect.center = self.road_card.center
+        pygame.draw.rect(self.board.screen, DEVELOPMENTROAD, self.road_card)
         self.board.screen.blit(road, road_rect)
 
-        monopoly_card = pygame.Rect(pos_x, pos_y + (100 * 3), 56.8, 87.8)
+        self.monopoly_card = pygame.Rect(pos_x, pos_y + (100 * 3), 56.8, 87.8)
         monopoly = pygame.transform.scale(d_monopoly, (35, 55))
         monopoly_rect = monopoly.get_rect()
-        monopoly_rect.center = monopoly_card.center
-        pygame.draw.rect(self.board.screen, MONOPOLY, monopoly_card)
+        monopoly_rect.center = self.monopoly_card.center
+        pygame.draw.rect(self.board.screen, MONOPOLY, self.monopoly_card)
         self.board.screen.blit(monopoly, monopoly_rect)
 
-        yofp_card = pygame.Rect(pos_x, pos_y + (100 * 4), 56.8, 87.8)
+        self.yofp_card = pygame.Rect(pos_x, pos_y + (100 * 4), 56.8, 87.8)
         yofp = pygame.transform.scale(d_yofp, (40, 55))
         yofp_rect = yofp.get_rect()
-        yofp_rect.center = yofp_card.center
-        pygame.draw.rect(self.board.screen, YEAROFPLENTY, yofp_card)
+        yofp_rect.center = self.yofp_card.center
+        pygame.draw.rect(self.board.screen, YEAROFPLENTY, self.yofp_card)
         self.board.screen.blit(yofp, yofp_rect)
 
         font = pygame.font.Font(pygame.font.get_default_font(), 30)
         vp_text = font.render(str(self.current_player.cards[VICTORYPOINT]), 1, BLACK)
         vp_text_rect = vp_text.get_rect()
-        vp_text_rect.center = (vp_card.centerx + 50, vp_card.centery)
+        vp_text_rect.center = (self.vp_card.centerx + 50, self.vp_card.centery)
         pygame.draw.rect(self.board.screen, BG_COLOUR3, vp_text_rect)
         self.board.screen.blit(vp_text, vp_text_rect)
 
         knight_text = font.render(str(self.current_player.cards[KNIGHT]), 1, BLACK)
         knight_text_rect = knight_text.get_rect()
-        knight_text_rect.center = (knight_card.centerx + 50, knight_card.centery)
+        knight_text_rect.center = (self.knight_card.centerx + 50, self.knight_card.centery)
         pygame.draw.rect(self.board.screen, BG_COLOUR2, knight_text_rect)
         self.board.screen.blit(knight_text, knight_text_rect)
         
         road_text = font.render(str(self.current_player.cards[DEVELOPMENTROAD]), 1, BLACK)
         road_text_rect = road_text.get_rect()
-        road_text_rect.center = (road_card.centerx + 50, road_card.centery)
+        road_text_rect.center = (self.road_card.centerx + 50, self.road_card.centery)
         pygame.draw.rect(self.board.screen, BG_COLOUR2, road_text_rect)
         self.board.screen.blit(road_text, road_text_rect)
 
         monopoly_text = font.render(str(self.current_player.cards[MONOPOLY]), 1, BLACK)
         monopoly_text_rect = monopoly_text.get_rect()
-        monopoly_text_rect.center = (monopoly_card.centerx + 50, monopoly_card.centery)
+        monopoly_text_rect.center = (self.monopoly_card.centerx + 50, self.monopoly_card.centery)
         pygame.draw.rect(self.board.screen, BG_COLOUR2, monopoly_text_rect)
         self.board.screen.blit(monopoly_text, monopoly_text_rect)
         
         yofp_text = font.render(str(self.current_player.cards[YEAROFPLENTY]), 1, BLACK)
         yofp_text_rect = yofp_text.get_rect()
-        yofp_text_rect.center = (yofp_card.centerx + 50, yofp_card.centery)
+        yofp_text_rect.center = (self.yofp_card.centerx + 50, self.yofp_card.centery)
         pygame.draw.rect(self.board.screen, BG_COLOUR3, yofp_text_rect)
         self.board.screen.blit(yofp_text, yofp_text_rect)
 
@@ -750,6 +750,16 @@ class Main:
                     else:
                         print("Cannot roll dice until initial placements have been made.")
 
+                if self.knight_card.collidepoint(location):
+                    self.play_knight(self.current_player)
+                elif self.road_card.collidepoint(location):
+                    self.play_road(self.current_player)
+                elif self.monopoly_card.collidepoint(location):
+                    self.play_monopoly(self.current_player)
+                elif self.yofp_card.collidepoint(location):
+                    self.play_yofp(self.current_player)
+
+                
                 if self.reset_rect.collidepoint(location):
                     self.clay_t = 0
                     self.ore_t = 0
@@ -944,6 +954,51 @@ class Main:
             player.get_development(choice)
             for required in DEVELOPMENT:
                 player.resources[required] -= 1
+
+    def play_knight(self, player):
+        if player.cards[KNIGHT] == 0:
+            print("Player does not have knight card")
+            return -1
+        else:
+            player.knight_counter += 1
+            print("knight played")
+            player.cards[KNIGHT] -= 1
+
+    def play_road(self, player):
+        if player.cards[DEVELOPMENTROAD] == 0:
+            print("Player does not have road card")
+            return -1
+        else:
+            self.handle_road(player, None)
+            self.handle_road(player, None)
+            player.cards[DEVELOPMENTROAD] -= 1
+
+    def play_monopoly(self, player):
+        if player.cards[MONOPOLY] == 0:
+            print("Player does not have monopoly card")
+            return -1
+        else:
+            count = 0
+            resources = [CLAY, ORE, WHEAT, SHEEP, WOOD, SAND]
+            choice = random.choice(resources)
+            for current_player in self.players:
+                if not current_player.resources[choice] == 0:
+                    current_player.resources[choice] -= 1
+                    count += 1
+            for i in range(count):
+                player.get_resource(choice)
+            player.cards[MONOPOLY] -= 1
+
+    def play_yofp(self, player):
+        if player.cards[YEAROFPLENTY] == 0:
+            print("Player does not have monopoly card")
+            return -1
+        else:
+            resources = [CLAY, ORE, WHEAT, SHEEP, WOOD, SAND]
+            for i in range(2):
+                choice = random.choice(resources)
+                player.get_resource(choice)
+            player.cards[YEAROFPLENTY] -= 1
 
     def handle_settlement(self, player, location):
         count = self.player_settlement_count(player)
