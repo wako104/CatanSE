@@ -1,3 +1,8 @@
+'''
+Author: Rob, Tyler, Will
+Class: Allows us to easily change and test settings for the game
+'''
+
 import pygame
 
 FPS = 60

@@ -1,3 +1,8 @@
+'''
+Author: Jake
+Class: Runs tests on the game
+'''
+
 import unittest
 import math
 

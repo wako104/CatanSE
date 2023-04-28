@@ -12,6 +12,10 @@ import itertools
 from collections import defaultdict
 from pygame import MOUSEBUTTONDOWN
 
+'''
+Author: Rob, Tyler, Will
+Class: Draws the board and handles settlement, city, and road placements 
+'''
 
 class Board:
     def __init__(self, width, height):
