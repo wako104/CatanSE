@@ -934,7 +934,7 @@ class Main:
                 pygame.mouse.set_cursor(pygame.cursors.arrow)
                 return -1
         else:
-            self.board.place_road(player, selected, False)
+            self.board.place_road(player, selected, False, False)
         pygame.mouse.set_cursor(pygame.cursors.arrow)
 
     def handle_city(self, player):
