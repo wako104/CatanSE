@@ -350,38 +350,38 @@ class Main:
         self.board.screen.blit(wood_text, (posx2 + (67*4), HEIGHT - 37.8))
 
     def draw_development(self):
-        posx = 20
-        posy = HEIGHT - 700
+        pos_x = 20
+        pos_y = HEIGHT - 700
 
-        vp_card = pygame.Rect(posx, posy, 56.8, 87.8)
+        vp_card = pygame.Rect(pos_x, pos_y, 56.8, 87.8)
         vp = pygame.transform.scale(d_victory_point, (35, 55))
         vp_rect = vp.get_rect()
         vp_rect.center = vp_card.center
         pygame.draw.rect(self.board.screen, VICTORYPOINT, vp_card)
         self.board.screen.blit(vp, vp_rect)
 
-        knight_card = pygame.Rect(posx, posy + 100, 56.8, 87.8)
+        knight_card = pygame.Rect(pos_x, pos_y + 100, 56.8, 87.8)
         knight = pygame.transform.scale(d_knight, (40, 55))
         knight_rect = knight.get_rect()
         knight_rect.center = knight_card.center
         pygame.draw.rect(self.board.screen, KNIGHT, knight_card)
         self.board.screen.blit(knight, knight_rect)
 
-        road_card = pygame.Rect(posx, posy + (100 * 2), 56.8, 87.8)
+        road_card = pygame.Rect(pos_x, pos_y + (100 * 2), 56.8, 87.8)
         road = pygame.transform.scale(d_road, (35, 55))
         road_rect = road.get_rect()
         road_rect.center = road_card.center
         pygame.draw.rect(self.board.screen, DEVELOPMENTROAD, road_card)
         self.board.screen.blit(road, road_rect)
 
-        monopoly_card = pygame.Rect(posx, posy + (100 * 3), 56.8, 87.8)
+        monopoly_card = pygame.Rect(pos_x, pos_y + (100 * 3), 56.8, 87.8)
         monopoly = pygame.transform.scale(d_monopoly, (35, 55))
         monopoly_rect = monopoly.get_rect()
         monopoly_rect.center = monopoly_card.center
         pygame.draw.rect(self.board.screen, MONOPOLY, monopoly_card)
         self.board.screen.blit(monopoly, monopoly_rect)
 
-        yofp_card = pygame.Rect(posx, posy + (100 * 4), 56.8, 87.8)
+        yofp_card = pygame.Rect(pos_x, pos_y + (100 * 4), 56.8, 87.8)
         yofp = pygame.transform.scale(d_yofp, (40, 55))
         yofp_rect = yofp.get_rect()
         yofp_rect.center = yofp_card.center
@@ -425,6 +425,24 @@ class Main:
         text = font.render("End Turn", 1, (255, 255, 255))
         text_pos = text.get_rect(center=self.end_turn_button_rect.center)
         self.board.screen.blit(text, text_pos)
+        
+    def draw_development_button(self):
+        pos_x = WIDTH - 600
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 50
+        development_button_colour = ()
+
+    def draw_city_button(self):
+        pos_x = WIDTH - 470
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 87.8
+        self.city_button_colour = (200, 65, 200)
+        self.city_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.city_button_colour, self.city_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("City", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.city_button_rect.center)
+        self.board.screen.blit(text, text_pos)
 
     def draw_settlement_button(self):
         pos_x = WIDTH - 350
@@ -448,18 +466,6 @@ class Main:
         font = pygame.font.Font(None, 24)
         text = font.render("Road", 1, (100, 50, 100))
         text_pos = text.get_rect(center=self.road_button_rect.center)
-        self.board.screen.blit(text, text_pos)
-
-    def draw_city_button(self):
-        pos_x = WIDTH - 470
-        pos_y = HEIGHT - 120
-        button_width, button_height = 100, 87.8
-        self.city_button_colour = (200, 65, 200)
-        self.city_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
-        pygame.draw.rect(self.board.screen, self.city_button_colour, self.city_button_rect)
-        font = pygame.font.Font(None, 24)
-        text = font.render("City", 1, (100, 50, 100))
-        text_pos = text.get_rect(center=self.city_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
     # ends turn
