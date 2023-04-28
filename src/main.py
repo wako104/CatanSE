@@ -14,6 +14,7 @@ from building import Settlement
 class Main:
 
     def __init__(self):
+        self.winner = None
         self.yes_button_rect = pygame.Rect(WIDTH - 250 + 30 - 20, 450, 50, 25)
         self.no_button_rect = pygame.Rect(WIDTH - 250 + 30 + 40, 450, 50, 25)
         self.player4_rect = None
@@ -98,6 +99,7 @@ class Main:
 
         # loops to keep game running and updating until it is closed
         while self.running:
+            self.check_for_winner()
             turn_number_text = self.font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
             self.board.screen.blit(turn_number_text, (10, 10))
@@ -319,6 +321,54 @@ class Main:
         else:
             pygame.draw.rect(self.board.screen, self.colour1, self.player1_rect)
             self.board.screen.blit(self.font.render("P1", True, BLACK), self.player1_rect)
+
+    def check_for_winner(self):
+        for i, player in enumerate(self.players):
+            if player.get_victory_points() == 10:
+                winner = player
+                print("Game over. Player " + str(i + 1) + " has reached 10 victory points and won the game")
+                self.end_game_screen(winner)
+
+    def end_game_screen(self, winner):
+        self.visual()
+        screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        pygame.display.set_caption("Main Menu")
+
+        background_image = pygame.image.load("../resources/catan.jpg")
+        background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+        logo_image = pygame.image.load("../resources/the_settlers.png")
+        logo_rect = logo_image.get_rect()
+        logo_rect.centerx = WIDTH // 2
+        logo_rect.y = 60
+
+        manager = pygame_gui.UIManager((WIDTH, HEIGHT))
+
+        text = self.font.render("PLAYER " + str(winner.num) + " HAS WON!", 1, WHITE)
+        shadow_text = self.font.render("PLAYER " + str(winner.num) + " HAS WON!", 1, (50, 50, 50))
+
+        running = True
+
+        while running:
+            time_delta = pygame.time.Clock().tick(60) / 1000.0
+
+            screen.blit(background_image, (0, 0))
+            screen.blit(logo_image, logo_rect)
+
+            shadow_text_rect = shadow_text.get_rect()
+            shadow_text_rect.center = (WIDTH // 2 + 2, HEIGHT // 2 + 2)
+            screen.blit(shadow_text, shadow_text_rect)
+
+            text_rect = text.get_rect()
+            text_rect.center = (WIDTH // 2, HEIGHT // 2)
+            screen.blit(text, text_rect)
+
+            manager.update(time_delta)
+            manager.draw_ui(screen)
+
+            self.events()
+
+            pygame.display.update()
 
     def draw_resources(self):
         pygame.draw.rect(self.board.screen, WHITE, (0, HEIGHT - 150, WIDTH, 150))
