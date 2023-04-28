@@ -65,6 +65,7 @@ class Main:
         self.dice = Dice()
         self.font = pygame.font.Font(pygame.font.get_default_font(), 25)
         self.font2 = pygame.font.Font(pygame.font.get_default_font(), 18)
+        self.font3 = pygame.font.Font(pygame.font.get_default_font(), 22)
         self.dice_count = 0
         self.receive_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
         self.give_resources = {CLAY: 0, ORE: 0, SHEEP: 0, WHEAT: 0, WOOD:0}
@@ -116,6 +117,7 @@ class Main:
             self.draw_road_button()
             self.draw_city_button()
             self.draw_exit_button()
+            self.draw_victory_points()
             self.clock.tick(FPS)
             self.visual()
             self.events()
@@ -373,6 +375,81 @@ class Main:
 
             pygame.display.update()
 
+    def draw_victory_points(self):
+        xpos = (WIDTH / 2) - (self.num_players * 30) + 40
+        xpos2 = xpos + 30
+        player_rect_width = 30
+        player_rect_height = 30
+        y_pos_player = 10
+
+        d_victory_point2 = pygame.transform.scale(d_victory_point, (20, 20))
+
+        text1_rect = pygame.Rect(xpos2 - 23, y_pos_player + 35, player_rect_width, player_rect_height)
+        text2_rect = pygame.Rect(xpos2 - 23 + 43, y_pos_player + 35, player_rect_width, player_rect_height)
+        text3_rect = pygame.Rect(xpos2 - 23 + 43 + 43, y_pos_player + 35, player_rect_width, player_rect_height)
+        text4_rect = pygame.Rect(xpos2 - 23 + 43 + 43 + 43, y_pos_player + 35, player_rect_width, player_rect_height)
+
+        player1_rect = pygame.Rect(xpos2 - 20, y_pos_player, player_rect_width, player_rect_height)
+        player2_rect = pygame.Rect(xpos2 - 20 + player_rect_width + 13, y_pos_player, player_rect_width, player_rect_height)
+        player3_rect = pygame.Rect(xpos2 - 20 + (player_rect_width + 13) * 2, y_pos_player, player_rect_width, player_rect_height)
+        player4_rect = pygame.Rect(xpos2 - 20 + (player_rect_width + 13) * 3, y_pos_player, player_rect_width, player_rect_height)
+        # Determine how many players to display
+        if self.num_players == 4:
+            pygame.draw.rect(self.board.screen, self.colour1, player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, player3_rect)
+            pygame.draw.rect(self.board.screen, self.colour4, player4_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text1_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text2_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text3_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text4_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), player3_rect)
+            self.board.screen.blit(self.font.render("P4", True, BLACK), player4_rect)
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8), y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[0].get_victory_points()), True, WHITE),(xpos2 - 23, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[1].get_victory_points()), True, WHITE),((xpos2 - 23) + 43, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43 + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[2].get_victory_points()), True, WHITE),((xpos2 - 23) + 43 + 43, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43 + 43 + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[3].get_victory_points()), True, WHITE), ((xpos2 - 23) + 43 + 43 + 43, y_pos_player + 35))
+        elif self.num_players == 3:
+            pygame.draw.rect(self.board.screen, self.colour1, player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, player2_rect)
+            pygame.draw.rect(self.board.screen, self.colour3, player3_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text1_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text2_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text3_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), player2_rect)
+            self.board.screen.blit(self.font.render("P3", True, BLACK), player3_rect)
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8), y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[0].get_victory_points()), True, WHITE), (xpos2 - 23, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[1].get_victory_points()), True, WHITE), ((xpos2 - 23) + 43, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43 + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[2].get_victory_points()), True, WHITE), ((xpos2 - 23) + 43 + 43, y_pos_player + 35))
+        elif self.num_players == 2:
+            pygame.draw.rect(self.board.screen, self.colour1, player1_rect)
+            pygame.draw.rect(self.board.screen, self.colour2, player2_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text1_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text2_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), player1_rect)
+            self.board.screen.blit(self.font.render("P2", True, BLACK), player2_rect)
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8), y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[0].get_victory_points()), True, WHITE), (xpos2 - 23, y_pos_player + 35))
+            self.board.screen.blit(d_victory_point2, ((xpos2 - 8) + 43, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[1].get_victory_points()), True, WHITE), ((xpos2 - 23) + 43, y_pos_player + 35))
+
+        else:
+            pygame.draw.rect(self.board.screen, self.colour1, player1_rect)
+            pygame.draw.rect(self.board.screen, BG_COLOUR2, text1_rect)
+            self.board.screen.blit(self.font.render("P1", True, BLACK), player1_rect)
+            self.board.screen.blit(d_victory_point2, (xpos2 - 8, y_pos_player + 35))
+            self.board.screen.blit(self.font3.render(str(self.players[0].get_victory_points()), True, WHITE), text1_rect)
+
     def draw_resources(self):
         pygame.draw.rect(self.board.screen, WHITE, (0, HEIGHT - 150, WIDTH, 150))
         posx = 20
@@ -483,6 +560,24 @@ class Main:
         text = font.render("End Turn", 1, (255, 255, 255))
         text_pos = text.get_rect(center=self.end_turn_button_rect.center)
         self.board.screen.blit(text, text_pos)
+        
+    def draw_development_button(self):
+        pos_x = WIDTH - 600
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 50
+        development_button_colour = ()
+
+    def draw_city_button(self):
+        pos_x = WIDTH - 470
+        pos_y = HEIGHT - 120
+        button_width, button_height = 100, 87.8
+        self.city_button_colour = (200, 65, 200)
+        self.city_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
+        pygame.draw.rect(self.board.screen, self.city_button_colour, self.city_button_rect)
+        font = pygame.font.Font(None, 24)
+        text = font.render("City", 1, (100, 50, 100))
+        text_pos = text.get_rect(center=self.city_button_rect.center)
+        self.board.screen.blit(text, text_pos)
 
     def draw_settlement_button(self):
         pos_x = WIDTH - 350
@@ -540,7 +635,7 @@ class Main:
         self.exit_button_rect = pygame.Rect(pos_x, pos_y, button_width, button_height)
         pygame.draw.rect(self.board.screen, self.exit_button_colour, self.exit_button_rect)
         font = pygame.font.Font(None, 24)
-        text = font.render("Exit", 1, (100, 50, 100))
+        text = font.render("Cancel", 1, (100, 50, 100))
         text_pos = text.get_rect(center=self.exit_button_rect.center)
         self.board.screen.blit(text, text_pos)
 
