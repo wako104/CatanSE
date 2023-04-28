@@ -106,6 +106,7 @@ class Main:
 
         # loops to keep game running and updating until it is closed
         while self.running:
+            self.check_knights()
             self.check_for_winner()
             turn_number_text = self.font.render("Turn Number: " + str(self.turn_number), 1, (255, 255, 255))
             pygame.draw.rect(self.board.screen, BG_COLOUR, (0, 0, 200, 50))
@@ -968,6 +969,18 @@ class Main:
             player.knight_counter += 1
             print("knight played")
             player.cards[KNIGHT] -= 1
+
+    def check_knights(self):
+        largest_army = max(self.players, key=lambda player: player.knight_counter)
+        for player in self.players:
+            if not player.knight_counter == 0:
+                if player == largest_army:
+                    player.largest_army = 1
+                else:
+                    player.largest_army = 0
+            else:
+                player.largest_army = 0
+
 
     def play_road(self, player):
         if player.cards[DEVELOPMENTROAD] == 0:
