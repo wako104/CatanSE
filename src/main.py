@@ -353,24 +353,66 @@ class Main:
         posx = 20
         posy = HEIGHT - 700
 
-        card_rect = pygame.Rect(posx, posy, 56.8, 87.8)
-        pygame.draw.rect(self.board.screen, BLACK, card_rect)
+        vp_card = pygame.Rect(posx, posy, 56.8, 87.8)
+        vp = pygame.transform.scale(d_victory_point, (35, 55))
+        vp_rect = vp.get_rect()
+        vp_rect.center = vp_card.center
+        pygame.draw.rect(self.board.screen, VICTORYPOINT, vp_card)
+        self.board.screen.blit(vp, vp_rect)
 
+        knight_card = pygame.Rect(posx, posy + 100, 56.8, 87.8)
+        knight = pygame.transform.scale(d_knight, (40, 55))
+        knight_rect = knight.get_rect()
+        knight_rect.center = knight_card.center
+        pygame.draw.rect(self.board.screen, KNIGHT, knight_card)
+        self.board.screen.blit(knight, knight_rect)
 
-        d_victory_point2 = pygame.transform.scale(d_victory_point, (56.8, 70))
-        self.board.screen.blit(d_victory_point2, (posx, posy + 17.8))
-        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
-        self.board.screen.blit(d_knight2, (posx, posy + (100 * 2)))
-        d_road2 = pygame.transform.scale(d_road, (56.8, 87.8))
-        self.board.screen.blit(d_road2, (posx, posy + 100))
-        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
-        self.board.screen.blit(d_knight2, (posx, posy + (100 * 3)))
-        d_knight2 = pygame.transform.scale(d_knight, (56.8, 87.8))
-        self.board.screen.blit(d_knight2, (posx, posy + (100 * 4)))
+        road_card = pygame.Rect(posx, posy + (100 * 2), 56.8, 87.8)
+        road = pygame.transform.scale(d_road, (35, 55))
+        road_rect = road.get_rect()
+        road_rect.center = road_card.center
+        pygame.draw.rect(self.board.screen, DEVELOPMENTROAD, road_card)
+        self.board.screen.blit(road, road_rect)
+
+        monopoly_card = pygame.Rect(posx, posy + (100 * 3), 56.8, 87.8)
+        monopoly = pygame.transform.scale(d_monopoly, (35, 55))
+        monopoly_rect = monopoly.get_rect()
+        monopoly_rect.center = monopoly_card.center
+        pygame.draw.rect(self.board.screen, MONOPOLY, monopoly_card)
+        self.board.screen.blit(monopoly, monopoly_rect)
+
+        yofp_card = pygame.Rect(posx, posy + (100 * 4), 56.8, 87.8)
+        yofp = pygame.transform.scale(d_yofp, (40, 55))
+        yofp_rect = yofp.get_rect()
+        yofp_rect.center = yofp_card.center
+        pygame.draw.rect(self.board.screen, YEAROFPLENTY, yofp_card)
+        self.board.screen.blit(yofp, yofp_rect)
 
         font = pygame.font.Font(pygame.font.get_default_font(), 30)
+        vp_text = font.render(str(self.current_player.cards[VICTORYPOINT]), 1, BLACK)
+        vp_text_rect = vp_text.get_rect()
+        vp_text_rect.center = (vp_card.centerx + 50, vp_card.centery)
+        self.board.screen.blit(vp_text, vp_text_rect)
+
         knight_text = font.render(str(self.current_player.cards[KNIGHT]), 1, BLACK)
-        self.board.screen.blit(knight_text, (posx + 80, posy))
+        knight_text_rect = knight_text.get_rect()
+        knight_text_rect.center = (knight_card.centerx + 50, knight_card.centery)
+        self.board.screen.blit(knight_text, knight_text_rect)
+        
+        road_text = font.render(str(self.current_player.cards[DEVELOPMENTROAD]), 1, BLACK)
+        road_text_rect = road_text.get_rect()
+        road_text_rect.center = (road_card.centerx + 50, road_card.centery)
+        self.board.screen.blit(road_text, road_text_rect)
+
+        monopoly_text = font.render(str(self.current_player.cards[MONOPOLY]), 1, BLACK)
+        monopoly_text_rect = monopoly_text.get_rect()
+        monopoly_text_rect.center = (monopoly_card.centerx + 50, monopoly_card.centery)
+        self.board.screen.blit(monopoly_text, monopoly_text_rect)
+        
+        yofp_text = font.render(str(self.current_player.cards[YEAROFPLENTY]), 1, BLACK)
+        yofp_text_rect = yofp_text.get_rect()
+        yofp_text_rect.center = (yofp_card.centerx + 50, yofp_card.centery)
+        self.board.screen.blit(yofp_text, yofp_text_rect)
 
     # creates end turn button
     def draw_end_turn_button(self):

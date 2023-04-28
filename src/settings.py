@@ -21,7 +21,7 @@ SAND = (218,211,150)
 
 KNIGHT = (138, 137, 132)
 DEVELOPMENTROAD = (0, 0, 0)
-YEAROFPLENTY = (255, 213, 0)
+YEAROFPLENTY = (67, 191, 33)
 MONOPOLY = (171, 76, 21)
 VICTORYPOINT = (214, 180, 11)
 
@@ -65,6 +65,6 @@ r_wood = pygame.image.load('../resources/r_wood.jpg')
 
 d_knight = pygame.image.load("../resources/d_knight.png")
 d_road = pygame.image.load("../resources/d_road.png")
-d_yop = pygame.image.load("../resources/d_yofp.png")
+d_yofp = pygame.image.load("../resources/d_yofp.png")
 d_monopoly = pygame.image.load("../resources/d_monopoly.png")
 d_victory_point = pygame.image.load("../resources/d_victory_point.png")
