@@ -394,9 +394,15 @@ class Board:
                 if settlement.player != player:
                     error = 2
 
-            if len(adjacent_settlement) == 0:
-                if len(owned_roads) == 0:
-                    error = 3
+            if not initial_placement:
+                if len(adjacent_settlement) == 0:
+                    if len(owned_roads) == 0:
+                        error = 3
+            else:
+                if len(adjacent_settlement) == 0:
+                    print("Must place initial road next to a settlement.")
+                    self.place_road(player, selected, initial_placement, True, exit_rect)
+                    return -1
 
             print(error)
             if error == 1:
