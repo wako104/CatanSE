@@ -887,6 +887,9 @@ class Main:
                 wait = pygame.event.wait()
             if wait.type == MOUSEBUTTONDOWN:
                 mouse_loc = pygame.mouse.get_pos()
+                if self.exit_button_rect.collidepoint(mouse_loc):
+                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                    return -1
                 for option in self.board.centre_edge:
                     if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                         if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
@@ -937,7 +940,7 @@ class Main:
         pygame.mouse.set_cursor(pygame.cursors.arrow)
 
     def handle_city(self, player):
-        self.board.build_city(player)
+        self.board.build_city(player, self.exit_button_rect)
 
     def can_end_turn(self, player):
         road_count = self.player_road_count(player)

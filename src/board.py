@@ -240,13 +240,13 @@ class Board:
                 if wait.type == MOUSEBUTTONDOWN:
                     mouse_loc = pygame.mouse.get_pos()
                     if exit_rect.collidepoint(mouse_loc):
+                        pygame.mouse.set_cursor(pygame.cursors.arrow)
                         return -1
                     for option in self.unique_v:
                         if mouse_loc[0] in range(option[0] - 10, option[0] + 10):
                             if mouse_loc[1] in range(option[1] - 10, option[1] + 10):
                                 selected = option
             elif repeat:
-                print("testing")
                 wait = pygame.event.wait()
                 pygame.mouse.set_cursor(pygame.cursors.ball)
                 while wait.type != MOUSEBUTTONDOWN:
@@ -256,7 +256,6 @@ class Board:
                     for option in self.unique_v:
                         if mouse_loc[0] in range(option[0] - 10, option[0] + 10):
                             if mouse_loc[1] in range(option[1] - 10, option[1] + 10):
-                                print("found option")
                                 selected = option
                     if selected is None:
                         print("Use a valid settlement location")
@@ -336,8 +335,9 @@ class Board:
                 wait = pygame.event.wait()
             if wait.type == MOUSEBUTTONDOWN:
                 mouse_loc = pygame.mouse.get_pos()
-            if exit_rect.collidepoint(mouse_loc):
-                return -1
+                if exit_rect.collidepoint(mouse_loc):
+                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                    return -1
             for option in self.centre_edge:
                 if mouse_loc[0] in range(option[0][0] - 10, option[0][0] + 10):
                     if mouse_loc[1] in range(option[0][1] - 10, option[0][1] + 10):
@@ -426,7 +426,7 @@ class Board:
                     if location in city.adjacent_hex_centres:
                         city.collect_resource(location)
 
-    def build_city(self, player):
+    def build_city(self, player, exit_rect):
         chosen_location = False
         found = False
         occupied = False
@@ -435,6 +435,9 @@ class Board:
             pygame.mouse.set_cursor(pygame.cursors.ball)
             if wait.type == MOUSEBUTTONDOWN:
                 mouse_loc = pygame.mouse.get_pos()
+                if exit_rect.collidepoint(mouse_loc):
+                    pygame.mouse.set_cursor(pygame.cursors.arrow)
+                    return -1
                 for option in self.unique_v:
                     if mouse_loc[0] in range(option[0] - 15, option[0] + 15):
                         if mouse_loc[1] in range(option[1] - 15, option[1] + 15):
