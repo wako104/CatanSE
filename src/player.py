@@ -21,7 +21,7 @@ class Player:
         # the development cards a player has
         self.cards = {KNIGHT: 0, DEVELOPMENTROAD: 0, YEAROFPLENTY: 0, MONOPOLY: 0, VICTORYPOINT: 0}
         # players victory point
-        self.victory_points = 7
+        self.victory_points = 0
         self.resources = {CLAY: 10, ORE: 10, SHEEP: 10, WHEAT: 10, WOOD: 10}
 
     def add_victory_point(self):
