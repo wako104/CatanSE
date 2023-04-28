@@ -975,7 +975,9 @@ class Main:
             return -1
         else:
             self.handle_road(player, None)
+            self.update()
             self.handle_road(player, None)
+            self.update()
             player.cards[DEVELOPMENTROAD] -= 1
 
     def play_monopoly(self, player):
