@@ -226,7 +226,7 @@ class Board:
                         self.vertex_adjacent_centres[vertex].append(centre)
 
     # method called when clicking on a location you want to place a settlement
-    def place_settlement(self, player, initial_placement, location, repeat):
+    def place_settlement(self, player, initial_placement, location, repeat, exit_rect):
         chosen_location = False
         selected = None
         print("Test")
@@ -237,6 +237,8 @@ class Board:
                 pygame.mouse.set_cursor(pygame.cursors.ball)
                 if wait.type == MOUSEBUTTONDOWN:
                     mouse_loc = pygame.mouse.get_pos()
+                    if exit_rect.collidepoint(mouse_loc):
+                        return -1
                     for option in self.unique_v:
                         if mouse_loc[0] in range(option[0] - 10, option[0] + 10):
                             if mouse_loc[1] in range(option[1] - 10, option[1] + 10):
